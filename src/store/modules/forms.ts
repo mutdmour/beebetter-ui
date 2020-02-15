@@ -17,7 +17,6 @@ const actions = {
 
 const mutations = {
  setForms(state: any, forms: Form[]) {
-   console.log('forms', forms)
   state.forms = forms
  },
 }
