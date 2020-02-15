@@ -1,21 +1,23 @@
 <template>
  <div class="forms">
   <h5>Forms</h5>
-  <ul>
-   <li v-for="form in forms" v-bind:key="form">
-    <div>
+  <b-container fluid="sm">
+   <b-form-row v-for="form in forms" v-bind:key="form" align-v="center" class="mt-2">
+    <b-col>
+      <span>
      {{ form.name }}
-    </div>
-    <div>
-      <b-dropdown right split text="Run" variant="success">
+     </span>
+    </b-col>
+    <b-col>
+      <b-dropdown right split text="Run" variant="success" size="sm">
         <b-dropdown-item>Edit</b-dropdown-item>
         <b-dropdown-item>Results</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item variant="danger">Delete</b-dropdown-item>
       </b-dropdown>
-    </div>
-   </li>
-  </ul>
+    </b-col>
+   </b-form-row>
+  </b-container>
  </div>
 </template>
 
