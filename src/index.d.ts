@@ -5,7 +5,8 @@ declare namespace beebetter {
   }
 
   export interface FormsState {
-    forms: Form[]
+    forms: Form[],
+    currentFormName: string
   }
 }
 

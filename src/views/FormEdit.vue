@@ -1,21 +1,15 @@
 <template>
- <b-container class="form-editor">
+ <b-container class="form-editor h-100">
   <b-row>
    <h4 class="float-left ml-2 mt-2">
-    {{ $route.params.name }} <b-icon-pencil></b-icon-pencil>
+    {{ form.name }} <b-icon-pencil></b-icon-pencil>
    </h4>
   </b-row>
-  <b-row>
-   <b-tabs content-class="mt-3">
+  <b-row class="h-100">
+   <b-tabs content-class="mt-3 h-100" class="w-100 h-100">
     <b-tab title="Designer" disabled></b-tab>
-    <b-tab title="JSON Editor" active>
-     <!-- <json-editor
-      v-model="json"
-      :options="options"
-      :plus="false"
-      :height="400px"
-      @error="onError"
-     /> -->
+    <b-tab title="JSON Editor" class="w-100 h-75" active>
+     <json-editor v-model="form" @submit="updateForm" />
     </b-tab>
    </b-tabs>
   </b-row>
@@ -24,16 +18,35 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// import VJsoneditor from 'v-jsoneditor/src/index'
+import JSONEditor from '../components/JSONEditor'
+import { Form } from '../index'
+import { mapGetters } from 'vuex'
+import { Route } from 'vue-router'
 
 export default Vue.extend({
  name: 'FormEdit',
+ computed: {
+  ...mapGetters({
+   form: 'forms/currentForm',
+  }),
+ },
  components: {
-  // 'json-editor': VJsoneditor,
+  'json-editor': JSONEditor,
+ },
+ created() {
+  this.$store.dispatch('forms/getAllForms')
+  this.$store.commit('forms/setCurrentForm', this.$route.params.name)
  },
  watch: {
-  $route(to, from) {
-   // react to route changes...
+  $route(to: Route) {
+   this.$store.commit('forms/setCurrentForm', to.params.name)
+  },
+ },
+ methods: {
+  updateForm(form: Form) {
+   this.$store.dispatch('forms/updateForm', form).catch((e: string) => {
+    alert(e)
+   })
   },
  },
 })
