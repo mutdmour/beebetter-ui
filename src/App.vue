@@ -5,17 +5,7 @@
  </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import NavBar from './components/NavBar'
-
-export default Vue.extend({
- name: 'App',
- components: {
-  'nav-bar': NavBar,
- },
-})
-</script>
+<script lang="ts" src="./App.ts"></script>
 
 <style lang="scss">
 @import 'node_modules/bootstrap/scss/bootstrap';
