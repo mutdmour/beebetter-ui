@@ -14,9 +14,4 @@
  </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
- name: 'NavBar',
-})
-</script>
+<script lang="ts" src="./NavBar.ts"></script>

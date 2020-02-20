@@ -36,6 +36,7 @@ export default Vue.extend({
  },
  computed: {
   ...mapState({
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    forms: (state: any) => state.forms.forms,
   }),
  },

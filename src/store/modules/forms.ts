@@ -1,5 +1,6 @@
 import { Form, FormsState } from '../../index'
 import { getForms, updateForm } from '../../api/forms'
+import { ActionContext } from 'vuex'
 
 const state = {
  currentFormName: null,
@@ -14,12 +15,14 @@ const getters = {
 }
 
 const actions = {
- getAllForms: (context: any) => {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ getAllForms: (context: ActionContext<any, unknown>) => {
   getForms((forms: Form[]) => {
    context.commit('setForms', forms)
   })
  },
- updateForm: (context: any, form: Form) => {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ updateForm: (context: ActionContext<any, unknown>, form: Form) => {
   return new Promise((resolve, reject) => {
    updateForm(form, (error: string | null) => {
     if (error) {
