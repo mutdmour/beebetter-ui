@@ -15,21 +15,21 @@ const getMockForms = () => [
       type: 'text',
       name: 'myquestion',
       content: {
-       title: 'Sup?',
+       label: 'Sup?',
       },
      },
      {
       type: 'radiogroup',
       name: 'selector',
       content: {
-       title: 'Pick one:',
+       label: 'Pick one:',
        options: [
         {
-         text: 'opt1',
+         label: 'opt1',
          value: 1,
         },
         {
-         text: 'opt2',
+         label: 'opt2',
          value: 0,
         },
        ],

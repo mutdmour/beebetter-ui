@@ -13,12 +13,12 @@ export default Vue.extend({
  },
  computed: {
   currentPage() {
-   return this.$attrs.value && this.$attrs.value[this.$data.currentPageIndex]
+   return this.$attrs.pages && this.$attrs.pages[this.$data.currentPageIndex]
   },
   isFinal() {
    return (
-    this.$attrs.value &&
-    this.$attrs.value.length - 1 === this.$data.currentPageIndex
+    this.$attrs.pages &&
+    this.$attrs.pages.length - 1 === this.$data.currentPageIndex
    )
   },
   hasPrevious() {
