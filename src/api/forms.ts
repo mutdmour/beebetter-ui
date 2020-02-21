@@ -3,7 +3,7 @@ import { Form } from '../index'
 /**
  * Mocking client-server processing
  */
-const getMockForms = () => [
+const getMockForms = (): Form[] => [
  {
   id: 1,
   name: 'daily',
@@ -39,10 +39,11 @@ const getMockForms = () => [
    },
    {
     name: 'page2',
+    elements: [],
    },
   ],
  },
- { id: 2, name: 'time' },
+ { id: 2, name: 'time', pages: [] },
 ]
 
 export function getForms(cb: (forms: Form[]) => void) {
