@@ -36,15 +36,7 @@ const actions = {
 }
 
 const mutations = {
- setForm: (state: FormsState, newForm: Form) => {
-  state.forms = state.forms.map((form: Form) => {
-   if (form.id == newForm.id) {
-    return newForm
-   }
-   return form
-  })
- },
- setCurrentForm: (state: FormsState, formName: string) => {
+ setCurrentFormName: (state: FormsState, formName: string) => {
   state.currentFormName = formName
  },
  setForms(state: FormsState, forms: Form[]) {

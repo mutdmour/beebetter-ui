@@ -6,9 +6,5 @@ export default Vue.extend({
  components: {
   'form-element': FormElement,
  },
- computed: {
-  elements() {
-   return this.$attrs.page && this.$attrs.page.elements
-  },
- },
+ props: ['elements', 'name'],
 })

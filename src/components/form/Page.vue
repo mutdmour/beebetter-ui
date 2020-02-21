@@ -1,7 +1,13 @@
 <template>
- <div class="page">
-  <b-row v-for="(el, index) in elements" v-bind:key="el.name">
-   <form-element :name="el.name" v-bind:element="elements[index]"></form-element>
+ <div class="page" v-if="Boolean(elements)">
+  <b-row v-for="(el, index) in elements" v-bind:key="index">
+   <div v-if="Boolean(el)">
+    <form-element
+     :type="el.type"
+     :name="el.name"
+     :content="elements[index].content"
+    ></form-element>
+   </div>
   </b-row>
  </div>
 </template>

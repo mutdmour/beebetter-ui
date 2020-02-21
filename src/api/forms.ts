@@ -46,7 +46,7 @@ const getMockForms = () => [
 ]
 
 export function getForms(cb: (forms: Form[]) => void) {
- setTimeout(() => cb(getMockForms()), 100)
+ setTimeout(() => cb(getMockForms()), 1000)
 }
 
 export function updateForm(form: Form, cb: (error: string | null) => void) {
@@ -56,5 +56,5 @@ export function updateForm(form: Form, cb: (error: string | null) => void) {
   } else {
    cb(null)
   }
- }, 100)
+ }, 1000)
 }

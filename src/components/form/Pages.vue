@@ -1,19 +1,19 @@
 <template>
- <b-container fluid>
+ <b-container fluid v-if="Boolean(currentPage)">
   <b-row class="ml-2">
-   <page v-bind:page="currentPage"></page>
+   <page :name="currentPage.name" :elements="currentPage.elements"></page>
   </b-row>
   <b-row class="ml-2 mt-2">
    <b-button
     v-show="hasPrevious"
-    variant="outline-secondary"
     @click="onPrevious"
+    variant="outline-secondary"
     class="mr-2 ml-2"
    >
     Previous
    </b-button>
 
-   <b-button v-if="isFinal" variant="success" @click="onSubmit" >
+   <b-button v-if="isFinal" variant="success" @click="onSubmit">
     Submit
    </b-button>
    <b-button v-else variant="outline-primary" @click="onNext">

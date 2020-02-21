@@ -1,9 +1,9 @@
 <template>
- <b-container class="form">
-  <b-row>
+ <b-container class="form" v-if="Boolean(form)">
+  <b-row v-if="Boolean(form.name)">
    <h4 class="float-left ml-2 mt-2">{{ form.name }} <b-icon-toggles /></h4>
   </b-row>
-  <b-row>
+  <b-row v-if="Boolean(form.pages)">
    <pages v-bind:pages="form.pages" />
   </b-row>
  </b-container>
@@ -27,11 +27,11 @@ export default Vue.extend({
  },
  created() {
   this.$store.dispatch('forms/getAllForms')
-  this.$store.commit('forms/setCurrentForm', this.$route.params.name)
+  this.$store.commit('forms/setCurrentFormName', this.$route.params.name)
  },
  watch: {
   $route(to: Route) {
-   this.$store.commit('forms/setCurrentForm', to.params.name)
+   this.$store.commit('forms/setCurrentFormName', to.params.name)
   },
  },
 })

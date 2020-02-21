@@ -8,6 +8,11 @@ declare namespace beebetter {
   forms: Form[]
   currentFormName: string
  }
+
+ export interface RadioGroupOption {
+  label: string
+  value: number
+ }
 }
 
 export = beebetter

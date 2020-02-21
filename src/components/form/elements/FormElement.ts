@@ -8,12 +8,5 @@ export default Vue.extend({
   'text-input': TextInput,
   'radio-group': RadioGroup,
  },
- computed: {
-  type() {
-   return this.$attrs.element.type
-  },
-  content() {
-    return this.$attrs.element.content
-  },
- },
+ props: ['type', 'content', 'name'],
 })
