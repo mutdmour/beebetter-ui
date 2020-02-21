@@ -25,7 +25,7 @@ declare namespace beebetter {
  }
 
  export interface Form {
-  id: number
+  slug: string
   name: string
   pages: Page[]
  }
