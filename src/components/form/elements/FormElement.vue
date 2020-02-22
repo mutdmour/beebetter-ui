@@ -4,6 +4,7 @@
    v-if="type === 'text'"
    :label="content.label"
    :value="content.value"
+   v-on:input="updateValue($event.target.value)"
   />
   <radio-group
    v-else-if="type === 'radiogroup'"

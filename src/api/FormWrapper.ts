@@ -13,7 +13,7 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
  value: number
 
  constructor(data: any) {
-  this.label = data.label
+  this.label = data.label || ''
   this.value = data.value
  }
 }
@@ -32,9 +32,11 @@ class RadioGroupWrapper implements RadioGroup {
 
 class TextInputWrapper implements TextInput {
  label: string
+ value: string
 
  constructor(data: any) {
   this.label = data.label
+  this.value = ''
  }
 }
 
@@ -50,7 +52,7 @@ class FormElementWrapper implements FormElement {
  }
 
  getContent(type: string, content: any) {
-  switch (content.type) {
+  switch (type) {
    case 'text':
     return new TextInputWrapper(content)
    case 'radiogroup':

@@ -9,4 +9,9 @@ export default Vue.extend({
   'radio-group': RadioGroup,
  },
  props: ['type', 'content', 'name'],
+ methods: {
+  updateValue(value: string) {
+   this.$emit('input', value)
+  },
+ },
 })

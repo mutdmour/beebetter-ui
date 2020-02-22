@@ -1,7 +1,11 @@
 <template>
  <b-container fluid v-if="Boolean(currentPage)">
   <b-row class="ml-2">
-   <page :name="currentPage.name" :elements="currentPage.elements"></page>
+   <page
+    :name="currentPage.name"
+    :elements="currentPage.elements"
+    v-on:input="updateValue($event.target.index, $event.target.value)"
+   ></page>
   </b-row>
   <b-row class="ml-2 mt-2">
    <b-button

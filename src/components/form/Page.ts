@@ -7,4 +7,9 @@ export default Vue.extend({
   'form-element': FormElement,
  },
  props: ['elements', 'name'],
+ methods: {
+  updateValue(index: number, value: string) {
+    this.$emit('input', index, value)
+  },
+ },
 })

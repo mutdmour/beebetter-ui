@@ -32,6 +32,9 @@ export default Vue.extend({
   onPrevious() {
    this.$data.currentPageIndex--
   },
+  updateValue(index: number, value: string) {
+   console.log(index, value)
+  },
   onSubmit() {
    alert('success')
   },

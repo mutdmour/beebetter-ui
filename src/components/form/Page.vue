@@ -6,6 +6,7 @@
      :type="el.type"
      :name="el.name"
      :content="elements[index].content"
+     v-on:input="updateValue(index, $event.target.value)"
     ></form-element>
    </div>
   </b-row>

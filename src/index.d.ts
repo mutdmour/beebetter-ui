@@ -11,6 +11,7 @@ declare namespace beebetter {
 
  export interface TextInput {
   label: string
+  value: string
  }
 
  interface FormElement {
