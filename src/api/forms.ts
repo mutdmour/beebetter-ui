@@ -47,8 +47,9 @@ const getMockResponse = () => [
  { slug: 'time', name: 'time', pages: [] },
 ]
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const wrapFormData = (forms: any[]): Form[] => {
-  return forms && forms.map(data => new FormWrapper(data))
+ return forms && forms.map(data => new FormWrapper(data))
 }
 
 export function getForms(cb: (forms: Form[]) => void) {

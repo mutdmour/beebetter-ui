@@ -16,7 +16,7 @@ declare namespace beebetter {
  interface FormElement {
   type: string
   name: string
-  content: TextInput | RadioGroup
+  content: TextInput | RadioGroup | null
  }
 
  export interface Page {
