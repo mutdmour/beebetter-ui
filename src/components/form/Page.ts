@@ -8,8 +8,8 @@ export default Vue.extend({
  },
  props: ['elements', 'name'],
  methods: {
-  updateValue(index: number, value: string) {
-    this.$emit('input', index, value)
+  onElementUpdate(index: number, value: string) {
+   this.$emit('elementUpdated', index, value)
   },
  },
 })

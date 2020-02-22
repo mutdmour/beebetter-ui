@@ -8,9 +8,9 @@ const state = {
 }
 
 const getters = {
- currentForm: (state: FormsState) => {
+ currentForm: (state: FormsState): Form | null => {
   const matches = state.forms.filter(form => form.name == state.currentFormName)
-  return matches.length > 0 ? matches[0] : {}
+  return matches.length > 0 ? matches[0] : null
  },
 }
 
@@ -41,6 +41,14 @@ const mutations = {
  },
  setForms(state: FormsState, forms: Form[]) {
   state.forms = forms
+ },
+ updateElement(state: FormsState, payload: any) {
+  const currentForm = getters.currentForm(state)
+  const currentPage = currentForm && currentForm.getPage(payload.pageIndex)
+  const currentElement = currentPage && currentPage.getElement(payload.elemIndex)
+  if (currentElement) {
+   currentElement.setValue(payload.value)
+  }
  },
 }
 

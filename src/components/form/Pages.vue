@@ -4,7 +4,7 @@
    <page
     :name="currentPage.name"
     :elements="currentPage.elements"
-    v-on:input="updateValue($event.target.index, $event.target.value)"
+    v-on:elementUpdated="onElementUpdated"
    ></page>
   </b-row>
   <b-row class="ml-2 mt-2">

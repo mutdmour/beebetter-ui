@@ -9,9 +9,6 @@ export default Vue.extend({
   }
  },
  computed: {
-  inputLabel(): string {
-   return this.$props.label || ''
-  },
   textValue: {
    get(): string {
     return this.$data.input || this.$props.value || ''
@@ -22,9 +19,8 @@ export default Vue.extend({
   },
  },
  methods: {
-  updateValue(value: string): void {
-   console.log('yo text', value)
-   this.$emit('input', value)
+  updateValue(index: number): void {
+   this.$emit('input', index)
   },
  },
 })

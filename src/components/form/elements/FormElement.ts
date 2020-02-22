@@ -11,7 +11,7 @@ export default Vue.extend({
  props: ['type', 'content', 'name'],
  methods: {
   updateValue(value: string) {
-   this.$emit('input', value)
+   this.$emit('updated', value)
   },
  },
 })

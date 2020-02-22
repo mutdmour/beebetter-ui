@@ -3,8 +3,10 @@
   <b-form-radio
    v-for="(opt, index) in options"
    v-bind:key="index"
+   v-on:input="updateValue"
    name="radios"
-   value="opt.value"
+   v-model="selected"
+   :value="opt.value"
   >
    {{ opt.label }}
   </b-form-radio>

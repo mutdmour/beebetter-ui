@@ -4,7 +4,7 @@
    <h4 class="float-left ml-2 mt-2">{{ form.name }} <b-icon-toggles /></h4>
   </b-row>
   <b-row v-if="Boolean(form.pages)">
-   <pages v-bind:pages="form.pages" />
+   <pages :pages="form.pages" v-on:elementUpdated="onElementUpdate" />
   </b-row>
  </b-container>
 </template>
@@ -32,6 +32,11 @@ export default Vue.extend({
  watch: {
   $route(to: Route) {
    this.$store.commit('forms/setCurrentFormName', to.params.name)
+  },
+ },
+ methods: {
+  onElementUpdate(pageIndex: number, elemIndex: number, value: string) {
+   this.$store.commit('forms/updateElement', { pageIndex, elemIndex, value })
   },
  },
 })

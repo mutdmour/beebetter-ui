@@ -21,12 +21,14 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
 class RadioGroupWrapper implements RadioGroup {
  label: string
  options: RadioGroupOption[]
+ value: string
 
  constructor(data: any) {
   this.label = data.label
   this.options = data.options
    ? data.options.map((opt: any) => new RadioGroupOptionWrapper(opt))
    : []
+  this.value = ''
  }
 }
 
@@ -61,6 +63,12 @@ class FormElementWrapper implements FormElement {
     return null
   }
  }
+
+ setValue(value: string) {
+  if (this.content) {
+   this.content.value = value
+  }
+ }
 }
 
 class PageWrapper implements Page {
@@ -72,6 +80,12 @@ class PageWrapper implements Page {
   this.elements = data.elements
    ? data.elements.map((element: any) => new FormElementWrapper(element))
    : []
+ }
+
+ getElement(index: number) {
+  return this.elements && this.elements.length > index
+   ? this.elements[index]
+   : null
  }
 }
 
@@ -86,5 +100,9 @@ export default class FormWrapper implements Form {
   this.pages = data.pages
    ? data.pages.map((page: any) => new PageWrapper(page))
    : []
+ }
+
+ getPage(index: number) {
+  return this.pages && this.pages.length > index ? this.pages[index] : null
  }
 }

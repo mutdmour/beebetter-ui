@@ -26,16 +26,16 @@ export default Vue.extend({
   },
  },
  methods: {
-  onNext() {
+  onNext(): void {
    this.$data.currentPageIndex++
   },
-  onPrevious() {
+  onPrevious(): void {
    this.$data.currentPageIndex--
   },
-  updateValue(index: number, value: string) {
-   console.log(index, value)
+  onElementUpdated(index: number, value: string): void {
+   this.$emit('elementUpdated', this.$data.currentPageIndex, index, value)
   },
-  onSubmit() {
+  onSubmit(): void {
    alert('success')
   },
  },
