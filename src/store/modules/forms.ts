@@ -42,10 +42,15 @@ const mutations = {
  setForms(state: FormsState, forms: Form[]) {
   state.forms = forms
  },
- updateElement(state: FormsState, payload: any) {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ updateElement(
+  state: FormsState,
+  payload: { pageIndex: number; elemIndex: number; value: string }
+ ) {
   const currentForm = getters.currentForm(state)
   const currentPage = currentForm && currentForm.getPage(payload.pageIndex)
-  const currentElement = currentPage && currentPage.getElement(payload.elemIndex)
+  const currentElement =
+   currentPage && currentPage.getElement(payload.elemIndex)
   if (currentElement) {
    currentElement.setValue(payload.value)
   }
