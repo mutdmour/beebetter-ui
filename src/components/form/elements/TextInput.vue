@@ -5,6 +5,7 @@
    type="text"
    v-on:input="updateValue"
    size="lg"
+   :required="required"
   />
  </b-form-group>
 </template>

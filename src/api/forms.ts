@@ -15,6 +15,8 @@ const getMockResponse = () => [
      {
       type: 'text',
       name: 'myquestion',
+      enabled: true,
+      required: true,
       content: {
        label: 'Sup?',
       },
@@ -22,6 +24,12 @@ const getMockResponse = () => [
      {
       type: 'radiogroup',
       name: 'selector',
+      enabled: true,
+      required: true,
+      beemind: {
+       enabled: true,
+       goalName: 'goal',
+      },
       content: {
        label: 'Pick one:',
        options: [
@@ -40,7 +48,16 @@ const getMockResponse = () => [
    },
    {
     name: 'page2',
-    elements: [],
+    elements: [
+     {
+      type: 'text',
+      name: 'test',
+      enabled: false,
+      content: {
+       label: 'disabled?',
+      },
+     },
+    ],
    },
   ],
  },

@@ -15,9 +15,17 @@ declare namespace beebetter {
   value: string
  }
 
+ interface BeeminderConfig {
+  enabled: true
+  goalName: string
+ }
+
  interface FormElement {
   type: string
   name: string
+  enabled: boolean
+  required: boolean
+  beemind: BeeminderConfig | null
   content: TextInput | RadioGroup | null
 
   setValue: (value: string) => void

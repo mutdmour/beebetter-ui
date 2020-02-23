@@ -2,21 +2,21 @@ import Vue from 'vue'
 
 export default Vue.extend({
  name: 'RadioGroup',
- props: ['label', 'options', 'value'],
+ props: ['label', 'options', 'value', 'required'],
  data() {
   return {
-   selectedIndex: null,
+   selectedValue: null,
   }
  },
  computed: {
   selected: {
    get() {
-    return this.$data.selectedIndex !== null
-     ? this.$data.selectedIndex
+    return this.$data.selectedValue !== null
+     ? this.$data.selecteValued
      : this.$props.value
    },
    set(value) {
-    this.$data.selectedIndex = value
+    this.$data.selectedValue = value
    },
   },
  },

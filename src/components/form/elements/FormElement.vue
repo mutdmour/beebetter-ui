@@ -1,16 +1,18 @@
 <template>
- <div class="form-element">
+ <div class="form-element" v-if="element.enabled">
   <text-input
-   v-if="type === 'text'"
-   :label="content.label"
-   :value="content.value"
+   v-if="element.type === 'text'"
+   :label="element.content.label"
+   :value="element.content.value"
+   :required="element.required"
    v-on:input="updateValue"
   />
   <radio-group
-   v-else-if="type === 'radiogroup'"
-   :label="content.label"
-   :options="content.options"
-   :value="content.value"
+   v-else-if="element.type === 'radiogroup'"
+   :label="element.content.label"
+   :options="element.content.options"
+   :value="element.value"
+   :required="element.required"
    v-on:input="updateValue"
   />
  </div>

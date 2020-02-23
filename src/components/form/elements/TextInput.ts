@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
  name: 'TextInput',
- props: ['label', 'value'],
+ props: ['label', 'value', 'required'],
  data() {
   return {
    input: '',

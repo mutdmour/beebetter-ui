@@ -7,6 +7,7 @@
    name="radios"
    v-model="selected"
    :value="opt.value"
+   :required="required"
   >
    {{ opt.label }}
   </b-form-radio>

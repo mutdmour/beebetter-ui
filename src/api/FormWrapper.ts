@@ -6,6 +6,7 @@ import {
  RadioGroup,
  TextInput,
  RadioGroupOption,
+ BeeminderConfig,
 } from '../index'
 
 class RadioGroupOptionWrapper implements RadioGroupOption {
@@ -46,11 +47,29 @@ class FormElementWrapper implements FormElement {
  type: string
  name: string
  content: TextInput | RadioGroup | null
+ beemind: BeeminderConfig | null
+ enabled: boolean
+ required: boolean
 
  constructor(data: any) {
   this.type = data.type
   this.name = data.name
   this.content = this.getContent(data.type, data.content)
+  this.beemind = this.getBeeminderConfig(data.beemind)
+  this.enabled = typeof data.enabled === 'boolean' ? data.enabled : true
+  this.required =
+   this.enabled && typeof data.required === 'boolean' ? data.required : false
+ }
+
+ getBeeminderConfig(config: any): BeeminderConfig | null {
+  if (config) {
+   return {
+    enabled: config.enabled,
+    goalName: config.goalName,
+   }
+  }
+
+  return null
  }
 
  getContent(type: string, content: any) {

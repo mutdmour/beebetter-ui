@@ -8,7 +8,7 @@ export default Vue.extend({
   'text-input': TextInput,
   'radio-group': RadioGroup,
  },
- props: ['type', 'content', 'name'],
+ props: ['element'],
  methods: {
   updateValue(value: string) {
    this.$emit('updated', value)

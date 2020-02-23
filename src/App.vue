@@ -19,7 +19,5 @@
  font-size: 1.25rem;
  line-height: 1.5;
  font-weight: 400;
- height: 100vh;
- width: 100%;
 }
 </style>

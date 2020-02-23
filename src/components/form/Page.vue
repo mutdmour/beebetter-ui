@@ -1,16 +1,14 @@
 <template>
- <div class="page" v-if="Boolean(elements)">
+ <b-container fluid="lg" class="page" v-if="Boolean(elements)">
   <b-row v-for="(el, index) in elements" v-bind:key="index">
    <div v-if="Boolean(el)">
     <form-element
-     :type="el.type"
-     :name="el.name"
-     :content="elements[index].content"
+     :element="elements[index]"
      v-on:updated="onElementUpdate(index, $event)"
     ></form-element>
    </div>
   </b-row>
- </div>
+ </b-container>
 </template>
 
 <script lang="ts" src="./Page.ts"></script>
