@@ -24,9 +24,9 @@
       <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
        Edit</b-dropdown-item
       >
-      <b-dropdown-item>Results</b-dropdown-item>
+      <b-dropdown-item disabled>Results</b-dropdown-item>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item variant="danger">Delete</b-dropdown-item>
+      <b-dropdown-item disabled variant="danger">Delete</b-dropdown-item>
      </b-dropdown>
     </b-col>
    </b-form-row>
