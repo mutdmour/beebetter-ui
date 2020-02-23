@@ -1,13 +1,13 @@
 <template>
  <div class="forms">
-  <b-container fluid="sm">
+  <b-container fluid="lg">
    <b-form-row
     v-for="form in forms"
     v-bind:key="form.id"
     align-v="center"
     class="mt-2"
    >
-    <b-col>
+    <b-col class="text-center align-middle">
      <span>
       {{ form.name }}
      </span>
@@ -16,9 +16,9 @@
      <b-dropdown
       right
       split
-      text="Run"
+      text="View"
       variant="success"
-      size="sm"
+      size="md"
       :splitHref="'/#/forms/' + form.slug"
      >
       <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
@@ -39,7 +39,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
- name: 'forms',
+ name: 'FormsList',
  created() {
   this.$store.dispatch('forms/getAllForms')
  },

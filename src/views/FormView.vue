@@ -16,7 +16,7 @@ import { Route } from 'vue-router'
 import Pages from '../components/form/Pages.vue'
 
 export default Vue.extend({
- name: 'Form',
+ name: 'FormView',
  computed: {
   ...mapGetters({
    form: 'forms/currentForm',

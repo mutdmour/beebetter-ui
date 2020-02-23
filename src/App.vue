@@ -15,7 +15,11 @@
  font-family: Avenir, Helvetica, Arial, sans-serif;
  -webkit-font-smoothing: antialiased;
  -moz-osx-font-smoothing: grayscale;
- text-align: center;
  color: #2c3e50;
+ font-size: 1.25rem;
+ line-height: 1.5;
+ font-weight: 400;
+ height: 100vh;
+ width: 100%;
 }
 </style>

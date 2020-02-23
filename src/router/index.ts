@@ -1,21 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Forms from '../views/Forms.vue'
+import FormsList from '../views/FormsList.vue'
 import FormEdit from '../views/FormEdit.vue'
-import Form from '../views/Form.vue'
+import FormView from '../views/FormView.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
  {
-  path: '/',
-  name: 'Forms',
-  component: Forms,
- },
- {
   path: '/forms',
   name: 'Forms',
-  component: Forms,
+  component: FormsList,
  },
  {
   path: '/forms/:name/edit',
@@ -25,7 +20,7 @@ const routes = [
  {
   path: '/forms/:name',
   name: 'Form',
-  component: Form,
+  component: FormView,
  },
 ]
 
