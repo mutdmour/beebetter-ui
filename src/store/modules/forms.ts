@@ -42,7 +42,6 @@ const mutations = {
  setForms(state: FormsState, forms: Form[]) {
   state.forms = forms
  },
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
  updateElement(
   state: FormsState,
   payload: { pageIndex: number; elemIndex: number; value: string }

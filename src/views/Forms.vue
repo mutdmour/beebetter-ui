@@ -13,8 +13,17 @@
      </span>
     </b-col>
     <b-col>
-     <b-dropdown right split text="Run" variant="success" size="sm">
-      <b-dropdown-item>Edit</b-dropdown-item>
+     <b-dropdown
+      right
+      split
+      text="Run"
+      variant="success"
+      size="sm"
+      :splitHref="'/#/forms/' + form.slug"
+     >
+      <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
+       Edit</b-dropdown-item
+      >
       <b-dropdown-item>Results</b-dropdown-item>
       <b-dropdown-divider></b-dropdown-divider>
       <b-dropdown-item variant="danger">Delete</b-dropdown-item>

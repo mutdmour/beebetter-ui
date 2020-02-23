@@ -1,6 +1,7 @@
 import Vue from 'vue'
 export default Vue.extend({
  name: 'JSONEditor',
+ props: ['input'],
  data() {
   return {
    newJson: '',
@@ -9,7 +10,9 @@ export default Vue.extend({
  computed: {
   json: {
    get() {
-    return JSON.stringify(this.$attrs.value, null, 2)
+    return this.$data.newJson
+     ? this.$data.newJson
+     : JSON.stringify(this.$props.input, null, 2)
    },
    set(newJSON: string) {
     this.newJson = newJSON
