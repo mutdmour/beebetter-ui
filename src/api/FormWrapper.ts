@@ -36,10 +36,12 @@ class RadioGroupWrapper implements RadioGroup {
 class TextInputWrapper implements TextInput {
  label: string
  value: string
+ expected: string | null
 
  constructor(data: any) {
   this.label = data.label
   this.value = ''
+  this.expected = data.expected || null
  }
 }
 

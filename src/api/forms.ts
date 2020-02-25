@@ -14,7 +14,6 @@ const getMockResponse = () => [
     elements: [
      {
       type: 'text',
-      name: 'myquestion',
       enabled: true,
       required: true,
       content: {
@@ -23,7 +22,6 @@ const getMockResponse = () => [
      },
      {
       type: 'radiogroup',
-      name: 'selector',
       enabled: true,
       required: true,
       beemind: {
@@ -51,10 +49,17 @@ const getMockResponse = () => [
     elements: [
      {
       type: 'text',
-      name: 'test',
       enabled: false,
       content: {
        label: 'disabled?',
+      },
+     },
+     {
+      type: 'text',
+      enabled: true,
+      content: {
+       label: 'expected?',
+       expected: 'expected',
       },
      },
     ],

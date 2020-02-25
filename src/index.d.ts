@@ -13,6 +13,7 @@ declare namespace beebetter {
  export interface TextInput {
   label: string
   value: string
+  expected: string | null
  }
 
  interface BeeminderConfig {
@@ -48,7 +49,7 @@ declare namespace beebetter {
 
  export interface FormsState {
   forms: Form[]
-  currentFormName: string
+  currentFormSlug: string
  }
 }
 

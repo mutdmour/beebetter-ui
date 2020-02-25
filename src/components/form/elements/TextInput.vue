@@ -6,6 +6,9 @@
    v-on:input="updateValue"
    size="lg"
    :required="required"
+   :state="asExpected"
+   @blur="doneTyping"
+   @update="onUpdate"
   />
  </b-form-group>
 </template>

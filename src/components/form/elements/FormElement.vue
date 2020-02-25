@@ -4,6 +4,7 @@
    v-if="element.type === 'text'"
    :label="element.content.label"
    :value="element.content.value"
+   :expected="element.content.expected"
    :required="element.required"
    v-on:input="updateValue"
   />

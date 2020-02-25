@@ -36,13 +36,13 @@ export default Vue.extend({
  created() {
   this.$store.dispatch('forms/getAllForms')
   this.$store.commit(
-   'forms/setCurrentFormName',
+   'forms/setCurrentFormSlug',
    this.$route.params && this.$route.params.name
   )
  },
  watch: {
   $route(to: Route) {
-   this.$store.commit('forms/setCurrentFormName', to.params && to.params.name)
+   this.$store.commit('forms/setCurrentFormSlug', to.params && to.params.name)
   },
  },
  methods: {

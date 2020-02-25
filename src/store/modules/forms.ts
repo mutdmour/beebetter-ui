@@ -3,13 +3,13 @@ import { getForms, updateForm } from '../../api/forms'
 import { ActionContext } from 'vuex'
 
 const state = {
- currentFormName: null,
+ currentFormSlug: null,
  forms: [],
 }
 
 const getters = {
  currentForm: (state: FormsState): Form | null => {
-  const matches = state.forms.filter(form => form.name == state.currentFormName)
+  const matches = state.forms.filter(form => form.slug == state.currentFormSlug)
   return matches.length > 0 ? matches[0] : null
  },
 }
@@ -36,8 +36,8 @@ const actions = {
 }
 
 const mutations = {
- setCurrentFormName: (state: FormsState, formName: string) => {
-  state.currentFormName = formName
+ setCurrentFormSlug: (state: FormsState, formName: string) => {
+  state.currentFormSlug = formName
  },
  setForms(state: FormsState, forms: Form[]) {
   state.forms = forms
