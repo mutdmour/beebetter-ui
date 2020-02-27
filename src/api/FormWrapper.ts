@@ -130,6 +130,7 @@ class RandomCollectionWrapper implements RandomCollection {
 
  constructor(data: any) {
   this.addElements(data.elements)
+  // TODO: filter by enabled
   this.selected = Math.floor(Math.random() * this.elements.length)
  }
 
@@ -220,7 +221,7 @@ export default class FormWrapper implements Form {
   if (typeof slug !== 'string') {
    throw new Error('Slug must be of type string')
   }
-  if (isAlphaNumericAndLowercase(slug)) {
+  if (!isAlphaNumericAndLowercase(slug)) {
    throw new Error('Slug must be alphanumeric and lowercase')
   }
 

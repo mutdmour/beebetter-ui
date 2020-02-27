@@ -27,12 +27,16 @@ const getMockResponse = () => [
       elements: [
        {
         type: 'text',
+        enabled: true,
+        required: false,
         content: {
          label: 'randA',
         },
        },
        {
         type: 'text',
+        enabled: true,
+        required: true,
         content: {
          label: 'randB',
         },
@@ -69,6 +73,7 @@ const getMockResponse = () => [
      {
       type: 'text',
       enabled: false,
+      required: true,
       content: {
        label: 'disabled?',
       },
@@ -76,6 +81,7 @@ const getMockResponse = () => [
      {
       type: 'text',
       enabled: true,
+      required: false,
       content: {
        label: 'expected?',
        expected: 'expected',
@@ -85,7 +91,7 @@ const getMockResponse = () => [
    },
   ],
  },
- { slug: 'time', name: 'time', pages: [] },
+//  { slug: 'time', name: 'time', pages: [] },
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
