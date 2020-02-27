@@ -21,6 +21,25 @@ const getMockResponse = () => [
       },
      },
      {
+      type: 'random',
+      enabled: true,
+      required: false,
+      elements: [
+       {
+        type: 'text',
+        content: {
+         label: 'randA',
+        },
+       },
+       {
+        type: 'text',
+        content: {
+         label: 'randB',
+        },
+       },
+      ],
+     },
+     {
       type: 'radiogroup',
       enabled: true,
       required: true,

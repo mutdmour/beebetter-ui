@@ -1,16 +1,16 @@
 declare namespace beebetter {
- export interface RadioGroupOption {
+ interface RadioGroupOption {
   label: string
   value: number
  }
 
- export interface RadioGroup {
+ interface RadioGroup {
   label: string
   options: RadioGroupOption[]
   value: string
  }
 
- export interface TextInput {
+ interface TextInput {
   label: string
   value: string
   expected: string | null
@@ -21,9 +21,13 @@ declare namespace beebetter {
   goalName: string
  }
 
+ interface RandomCollection {
+  elements: FormElement[]
+  selected: number
+ }
+
  interface FormElement {
   type: string
-  name: string
   enabled: boolean
   required: boolean
   beemind: BeeminderConfig | null
@@ -32,14 +36,14 @@ declare namespace beebetter {
   setValue: (value: string) => void
  }
 
- export interface Page {
+ interface Page {
   name: string
-  elements: FormElement[]
+  elements: (FormElement | RandomCollection)[]
 
-  getElement: (index: number) => FormElement | null
+  getElement: (index: number) => FormElement | RandomCollection | null
  }
 
- export interface Form {
+ interface Form {
   slug: string
   name: string
   pages: Page[]
@@ -47,7 +51,7 @@ declare namespace beebetter {
   getPage: (index: number) => Page | null
  }
 
- export interface FormsState {
+ interface FormsState {
   forms: Form[]
   currentFormSlug: string
  }
