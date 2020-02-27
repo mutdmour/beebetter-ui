@@ -7,7 +7,7 @@ import FormWrapper from './FormWrapper'
 const getMockResponse = () => [
  {
   slug: 'daily',
-  name: 'daily',
+  name: 'Daily Form',
   pages: [
    {
     name: 'page1',
