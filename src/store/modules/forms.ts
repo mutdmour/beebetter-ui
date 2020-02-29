@@ -44,14 +44,15 @@ const mutations = {
  },
  updateElement(
   state: FormsState,
-  payload: { pageIndex: number; elemIndex: number; value: string }
+  payload: {
+   pageIndex: number
+   elementIndex: number
+   value: string
+  }
  ) {
-  const currentForm = getters.currentForm(state)
-  const currentPage = currentForm && currentForm.getPage(payload.pageIndex)
-  const currentElement =
-   currentPage && currentPage.getElement(payload.elemIndex)
-  if (currentElement) {
-   currentElement.setValue(payload.value)
+  const form = getters.currentForm(state)
+  if (form) {
+   form.setValue(payload.pageIndex, payload.elementIndex, payload.value)
   }
  },
 }

@@ -24,6 +24,8 @@ declare namespace beebetter {
  interface RandomCollection {
   elements: FormElement[]
   selected: number
+  type: string
+  setValue: (value: string) => void
  }
 
  interface FormElement {
@@ -41,6 +43,7 @@ declare namespace beebetter {
   elements: (FormElement | RandomCollection)[]
 
   getElement: (index: number) => FormElement | RandomCollection | null
+  setValue: (elementIndex: number, value: string) => void
  }
 
  interface Form {
@@ -49,6 +52,7 @@ declare namespace beebetter {
   pages: Page[]
 
   getPage: (index: number) => Page | null
+  setValue: (pageIndex: number, elementIndex: number, value: string) => void
  }
 
  interface FormsState {

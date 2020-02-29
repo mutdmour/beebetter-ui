@@ -125,10 +125,18 @@ class FormElementWrapper implements FormElement {
 }
 
 class RandomCollectionWrapper implements RandomCollection {
+ type: string
  elements!: FormElement[]
  selected: number
 
  constructor(data: any) {
+  if (!data) {
+   throw new Error('Element must have necessarily details')
+  }
+  if (data.type !== 'random') {
+   throw new Error('Element must have type: random')
+  }
+  this.type = data.type
   this.addElements(data.elements)
   // TODO: filter by enabled
   this.selected = Math.floor(Math.random() * this.elements.length)
@@ -153,6 +161,13 @@ class RandomCollectionWrapper implements RandomCollection {
   return this.elements && this.elements.length > index
    ? this.elements[index]
    : null
+ }
+
+ setValue(value: string) {
+  const element = this.getElement(this.selected)
+  if (element) {
+   element.setValue(value)
+  }
  }
 }
 
@@ -200,6 +215,13 @@ class PageWrapper implements Page {
   return this.elements && this.elements.length > index
    ? this.elements[index]
    : null
+ }
+
+ setValue(elementIndex: number, value: string) {
+  const element = this.getElement(elementIndex)
+  if (element) {
+   element.setValue(value)
+  }
  }
 }
 
@@ -253,5 +275,12 @@ export default class FormWrapper implements Form {
 
  getPage(index: number) {
   return this.pages && this.pages.length > index ? this.pages[index] : null
+ }
+
+ setValue(pageIndex: number, elementIndex: number, value: string) {
+  const page = this.getPage(pageIndex)
+  if (page) {
+   page.setValue(elementIndex, value)
+  }
  }
 }

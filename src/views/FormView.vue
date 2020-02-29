@@ -35,8 +35,8 @@ export default Vue.extend({
   },
  },
  methods: {
-  onElementUpdate(pageIndex: number, elemIndex: number, value: string) {
-   this.$store.commit('forms/updateElement', { pageIndex, elemIndex, value })
+  onElementUpdate(pageIndex: number, elementIndex: number, value: string) {
+   this.$store.commit('forms/updateElement', { pageIndex, elementIndex, value })
   },
  },
 })
