@@ -16,8 +16,25 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
  value: number
 
  constructor(data: any) {
-  this.label = data.label || ''
-  this.value = data.value
+  this.label = this.getLabel(data.label)
+  this.value = this.getValue(data.value)
+ }
+
+ getLabel(label: string) {
+  if (!label) {
+   throw new Error('Label field in radio group must have value')
+  }
+  return label
+ }
+
+ getValue(value: number) {
+  if (value === null || value === undefined) {
+   throw new Error('value field in radio group must have value')
+  }
+  if (typeof value !== 'number') {
+   throw new Error('value field in radio group must be a number')
+  }
+  return value
  }
 }
 
@@ -27,11 +44,29 @@ class RadioGroupWrapper implements RadioGroup {
  value: string
 
  constructor(data: any) {
-  this.label = data.label
-  this.options = data.options
-   ? data.options.map((opt: any) => new RadioGroupOptionWrapper(opt))
-   : []
+  this.label = this.getLabel(data.label)
+  this.options = this.getOptions(data.options)
   this.value = ''
+ }
+
+ getOptions(options: any[]) {
+   if (!options) {
+    throw new Error('Options field in radio group must have value')
+   }
+   if (!Array.isArray(options)) {
+     throw new Error('Options field in radio group must be an array')
+   }
+   if (options.length === 0) {
+     throw new Error('Options field in radio group must not be empty')
+   }
+   return options.map((opt: any) => new RadioGroupOptionWrapper(opt))
+ }
+
+ getLabel(label: string) {
+  if (!label) {
+   throw new Error('Label field in radio group must have value')
+  }
+  return label
  }
 }
 
@@ -41,32 +76,39 @@ class TextInputWrapper implements TextInput {
  expected: string | null
 
  constructor(data: any) {
-  this.label = data.label
-  this.value = ''
+  this.label = this.getLabel(data.label)
   this.expected = data.expected || null
+  this.value = ''
+ }
+
+ getLabel(label: string) {
+  if (!label) {
+   throw new Error('Label field in text input must have value')
+  }
+  return label
  }
 }
 
 class FormElementWrapper implements FormElement {
- type!: string
+ type: string
  content: TextInput | RadioGroup | null
  beemind: BeeminderConfig | null
- enabled!: boolean
- required!: boolean
+ enabled: boolean
+ required: boolean
 
  constructor(data: any) {
-  this.addType(data.type)
+  this.type = this.getType(data.type)
   this.beemind = this.getBeeminderConfig(data.beemind)
   this.content = this.getContent(data.type, data.content)
-  this.addEnabled(data.enabled)
-  this.addRequired(data.required)
+  this.enabled = this.getEnabled(data.enabled)
+  this.required = this.getRequired(data.required)
  }
 
- addType(type: string) {
+ getType(type: string) {
   if (!type) {
    throw new Error('Type is a required field of an element')
   }
-  this.type = type
+  return type
  }
 
  getBeeminderConfig(config: any): BeeminderConfig | null {
@@ -103,18 +145,18 @@ class FormElementWrapper implements FormElement {
   }
  }
 
- addEnabled(enabled: boolean) {
+ getEnabled(enabled: boolean) {
   if (typeof enabled !== 'boolean') {
    throw new Error('Enabled value must be boolean in beemind config')
   }
-  this.enabled = enabled
+  return enabled
  }
 
- addRequired(required: boolean) {
+ getRequired(required: boolean) {
   if (typeof required !== 'boolean') {
    throw new Error('Required value must be boolean in beemind config')
   }
-  this.required = required
+  return required
  }
 
  setValue(value: string) {
@@ -126,7 +168,7 @@ class FormElementWrapper implements FormElement {
 
 class RandomCollectionWrapper implements RandomCollection {
  type: string
- elements!: FormElement[]
+ elements: FormElement[]
  selected: number
 
  constructor(data: any) {
@@ -137,12 +179,19 @@ class RandomCollectionWrapper implements RandomCollection {
    throw new Error('Element must have type: random')
   }
   this.type = data.type
-  this.addElements(data.elements)
-  // TODO: filter by enabled
-  this.selected = Math.floor(Math.random() * this.elements.length)
+  this.elements = this.getElements(data.elements)
+  this.selected = this.getSelected()
  }
 
- addElements(elements: any[]) {
+ getSelected() {
+  const enabled = this.elements
+   .map((el, i) => ({ el, i }))
+   .filter(item => item.el.enabled)
+  const selected = Math.floor(Math.random() * this.elements.length)
+  return enabled[selected].i
+ }
+
+ getElements(elements: any[]) {
   if (!elements) {
    throw new Error('elements is required field of form')
   }
@@ -152,9 +201,7 @@ class RandomCollectionWrapper implements RandomCollection {
   if (elements.length === 0) {
    throw new Error('page elements must have length of more than 0')
   }
-  this.elements = elements.map(
-   (element: any) => new FormElementWrapper(element)
-  )
+  return elements.map((element: any) => new FormElementWrapper(element))
  }
 
  getElement(index: number) {
@@ -172,25 +219,25 @@ class RandomCollectionWrapper implements RandomCollection {
 }
 
 class PageWrapper implements Page {
- name!: string
- elements!: (FormElement | RandomCollection)[]
+ name: string
+ elements: (FormElement | RandomCollection)[]
 
  constructor(data: any) {
-  this.addName(data.name)
-  this.addElements(data.elements)
+  this.name = this.getName(data.name)
+  this.elements = this.getElements(data.elements)
  }
 
- addName(name: string) {
+ getName(name: string) {
   if (!name) {
    throw new Error('name is required field of a page')
   }
   if (typeof name !== 'string') {
    throw new Error('name must be of type string')
   }
-  this.name = name
+  return name
  }
 
- addElements(elements: any[]) {
+ getElements(elements: any[]) {
   if (!elements) {
    throw new Error('elements is required field of form')
   }
@@ -200,7 +247,7 @@ class PageWrapper implements Page {
   if (elements.length === 0) {
    throw new Error('page elements must have length of more than 0')
   }
-  this.elements = elements.map((element: any) => this.getFormElement(element))
+  return elements.map((element: any) => this.getFormElement(element))
  }
 
  getFormElement(element: any) {
@@ -226,17 +273,17 @@ class PageWrapper implements Page {
 }
 
 export default class FormWrapper implements Form {
- slug!: string
- name!: string
- pages!: Page[]
+ slug: string
+ name: string
+ pages: Page[]
 
  constructor(data: any) {
-  this.addSlug(data.slug)
-  this.addName(data.name)
-  this.addPages(data.pages)
+  this.slug = this.getSlug(data.slug)
+  this.name = this.getName(data.name)
+  this.pages = this.getPages(data.pages)
  }
 
- addSlug(slug: string) {
+ getSlug(slug: string) {
   if (!slug) {
    throw new Error('Slug for form is required')
   }
@@ -247,20 +294,20 @@ export default class FormWrapper implements Form {
    throw new Error('Slug must be alphanumeric and lowercase')
   }
 
-  this.slug = slug
+  return slug
  }
 
- addName(name: string) {
+ getName(name: string) {
   if (!name) {
    throw new Error('name is required field of form')
   }
   if (typeof name !== 'string') {
    throw new Error('name must be of type string')
   }
-  this.name = name
+  return name
  }
 
- addPages(pages: any[]) {
+ getPages(pages: any[]) {
   if (!pages) {
    throw new Error('form pages is required field of form')
   }
@@ -270,7 +317,7 @@ export default class FormWrapper implements Form {
   if (pages.length === 0) {
    throw new Error('form pages must have length of more than 0')
   }
-  this.pages = pages.map((page: any) => new PageWrapper(page))
+  return pages.map((page: any) => new PageWrapper(page))
  }
 
  getPage(index: number) {
