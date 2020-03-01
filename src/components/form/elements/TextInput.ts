@@ -12,9 +12,11 @@ export default Vue.extend({
  computed: {
   textValue: {
    get(): string {
+     console.log('get', this.$data.input || this.$props.value || '')
     return this.$data.input || this.$props.value || ''
    },
    set(newValue: string): void {
+     console.log('set', newValue)
     this.$data.input = newValue
    },
   },

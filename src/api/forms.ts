@@ -72,7 +72,7 @@ const getMockResponse = () => [
     elements: [
      {
       type: 'text',
-      enabled: false,
+      enabled: true,
       required: true,
       content: {
        label: 'disabled?',

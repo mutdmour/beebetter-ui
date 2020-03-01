@@ -5,6 +5,7 @@
     :name="currentPage.name"
     :elements="currentPage.elements"
     v-on:elementUpdated="onElementUpdated"
+    v-bind:pageIndex="currentPageIndex"
    ></page>
   </b-row>
   <b-row class="ml-2 mt-2">
