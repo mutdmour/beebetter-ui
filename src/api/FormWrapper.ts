@@ -115,6 +115,7 @@ class FormElementWrapper implements FormElement {
  beemind: BeeminderConfig | null
  enabled: boolean
  required: boolean
+ validated: boolean
 
  constructor(data: any) {
   this.type = this.getType(data.type)
@@ -122,10 +123,18 @@ class FormElementWrapper implements FormElement {
   this.content = this.getContent(data.type, data.content)
   this.enabled = this.getEnabled(data.enabled)
   this.required = this.getRequired(data.required)
+  this.validated = false
+ }
+
+ get invalid(): boolean {
+  return this.validated && this.enabled && this.required
+   ? !this.content.canSubmit()
+   : false
  }
 
  canSubmit(): boolean {
-  return this.enabled && this.required ? this.content.canSubmit() : true
+  this.validated = true
+  return !this.invalid
  }
 
  getType(type: string): string {
@@ -254,10 +263,9 @@ class PageWrapper implements Page {
  }
 
  canSubmit() {
-  return this.elements.reduce(
-   (prev, element) => prev && element.canSubmit(),
-   true
-  )
+  return this.elements
+   .map(element => element.canSubmit())
+   .reduce((prev, curr) => prev && curr, true)
  }
 
  getName(name: string) {

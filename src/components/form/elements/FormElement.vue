@@ -1,5 +1,5 @@
 <template>
- <div class="form-element" v-if="element.enabled">
+ <b-row :class="classes" v-if="element.enabled">
   <text-input
    v-if="element.type === 'text'"
    :label="element.content.label"
@@ -16,7 +16,7 @@
    :required="element.required"
    v-on:input="updateValue"
   />
- </div>
+ </b-row>
 </template>
 
 <script lang="ts" src="./FormElement.ts"></script>

@@ -9,6 +9,15 @@ export default Vue.extend({
   'radio-group': RadioGroup,
  },
  props: ['element'],
+ computed: {
+  classes() {
+   const classes = 'form-element px-md-5 mb-2 '
+   if (this.$props.element.invalid) {
+    return classes + 'border border-danger rounded'
+   }
+   return classes
+  },
+ },
  methods: {
   updateValue(value: string) {
    this.$emit('updated', value)

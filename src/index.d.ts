@@ -39,6 +39,7 @@ declare namespace beebetter {
   required: boolean
   beemind: BeeminderConfig | null
   content: TextInput | RadioGroup
+  invalid: boolean
 
   setValue: (value: string) => void
   canSubmit: () => boolean

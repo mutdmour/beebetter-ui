@@ -1,7 +1,7 @@
 <template>
  <b-container fluid="lg" class="page" v-if="Boolean(elements)">
   <b-row v-for="(el, index) in elements" v-bind:key="index + pageIndex * 10000">
-   <div v-if="Boolean(el)">
+   <b-row v-if="Boolean(el)">
     <form-element
      v-if="el.type === 'random'"
      :element="el.elements[el.selected]"
@@ -13,7 +13,7 @@
      :element="el"
      v-on:updated="onElementUpdate(index, $event)"
     ></form-element>
-   </div>
+   </b-row>
   </b-row>
  </b-container>
 </template>
