@@ -6,7 +6,7 @@ export default Vue.extend({
  components: {
   'form-element': FormElement,
  },
- props: ['elements', 'name'],
+ props: ['elements', 'name', 'pageIndex'],
  methods: {
   onElementUpdate(index: number, value: string) {
    this.$emit('elementUpdated', index, value)

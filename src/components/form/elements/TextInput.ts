@@ -12,11 +12,9 @@ export default Vue.extend({
  computed: {
   textValue: {
    get(): string {
-     console.log('get', this.$data.input || this.$props.value || '')
     return this.$data.input || this.$props.value || ''
    },
    set(newValue: string): void {
-     console.log('set', newValue)
     this.$data.input = newValue
    },
   },
@@ -28,7 +26,10 @@ export default Vue.extend({
    ) {
     return null
    }
-   return this.$props.expected === this.$data.input
+   return (
+    this.$props.expected.trim().toLocaleLowerCase() ===
+    this.$data.input.trim().toLocaleLowerCase()
+   )
   },
  },
  methods: {

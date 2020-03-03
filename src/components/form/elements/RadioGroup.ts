@@ -11,9 +11,7 @@ export default Vue.extend({
  computed: {
   selected: {
    get() {
-    return this.$data.selectedValue !== null
-     ? this.$data.selecteValued
-     : this.$props.value
+    return this.$data.selectedValue || this.$props.value
    },
    set(value) {
     this.$data.selectedValue = value

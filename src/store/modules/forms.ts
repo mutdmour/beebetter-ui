@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form, FormsState } from '../../index'
 import { getForms, updateForm } from '../../api/forms'
 import { ActionContext } from 'vuex'
@@ -15,13 +16,11 @@ const getters = {
 }
 
 const actions = {
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
  getAllForms: (context: ActionContext<any, unknown>) => {
   getForms((forms: Form[]) => {
    context.commit('setForms', forms)
   })
  },
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
  updateForm: (context: ActionContext<any, unknown>, form: Form) => {
   return new Promise((resolve, reject) => {
    updateForm(form, (error: string | null) => {
@@ -31,6 +30,27 @@ const actions = {
     context.commit('setForm', form)
     resolve()
    })
+  })
+ },
+ continueToNextPage: (
+  context: ActionContext<any, unknown>,
+  pageIndex: number
+ ) => {
+  return new Promise((resolve, reject) => {
+   const currentForm = getters.currentForm(context.state)
+   if (currentForm?.canSubmitPage(pageIndex)) {
+    return resolve()
+   }
+   reject()
+  })
+ },
+ submitForm: (context: ActionContext<any, unknown>) => {
+  return new Promise((resolve, reject) => {
+   const currentForm = getters.currentForm(context.state)
+   if (currentForm?.canSubmit()) {
+    return resolve()
+   }
+   reject()
   })
  },
 }

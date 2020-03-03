@@ -56,11 +56,11 @@ const getMockResponse = () => [
        options: [
         {
          label: 'opt1',
-         value: 1,
+         value: '1',
         },
         {
          label: 'opt2',
-         value: 0,
+         value: '0',
         },
        ],
       },

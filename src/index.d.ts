@@ -1,19 +1,23 @@
 declare namespace beebetter {
  interface RadioGroupOption {
   label: string
-  value: number
+  value: string
  }
 
  interface RadioGroup {
   label: string
   options: RadioGroupOption[]
   value: string
+  canSubmit: () => boolean
+  setValue: (value: string) => void
  }
 
  interface TextInput {
   label: string
   value: string
   expected: string | null
+  canSubmit: () => boolean
+  setValue: (value: string) => void
  }
 
  interface BeeminderConfig {
@@ -26,6 +30,7 @@ declare namespace beebetter {
   selected: number
   type: string
   setValue: (value: string) => void
+  canSubmit: () => boolean
  }
 
  interface FormElement {
@@ -33,9 +38,10 @@ declare namespace beebetter {
   enabled: boolean
   required: boolean
   beemind: BeeminderConfig | null
-  content: TextInput | RadioGroup | null
+  content: TextInput | RadioGroup
 
   setValue: (value: string) => void
+  canSubmit: () => boolean
  }
 
  interface Page {
@@ -44,6 +50,7 @@ declare namespace beebetter {
 
   getElement: (index: number) => FormElement | RandomCollection | null
   setValue: (elementIndex: number, value: string) => void
+  canSubmit: () => boolean
  }
 
  interface Form {
@@ -53,6 +60,8 @@ declare namespace beebetter {
 
   getPage: (index: number) => Page | null
   setValue: (pageIndex: number, elementIndex: number, value: string) => void
+  canSubmit: () => boolean
+  canSubmitPage: (pageIndex: number) => boolean
  }
 
  interface FormsState {

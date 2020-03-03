@@ -13,27 +13,28 @@ import { isAlphaNumericAndLowercase } from './helpers'
 
 class RadioGroupOptionWrapper implements RadioGroupOption {
  label: string
- value: number
+ value: string
 
  constructor(data: any) {
   this.label = this.getLabel(data.label)
   this.value = this.getValue(data.value)
  }
 
- getLabel(label: string) {
+ getLabel(label: string): string {
   if (!label) {
    throw new Error('Label field in radio group must have value')
   }
   return label
  }
 
- getValue(value: number) {
-  if (value === null || value === undefined) {
+ getValue(value: string): string {
+  if (typeof value !== 'string') {
+   throw new Error('value field in radio group must be a string')
+  }
+  if (!value) {
    throw new Error('value field in radio group must have value')
   }
-  if (typeof value !== 'number') {
-   throw new Error('value field in radio group must be a number')
-  }
+
   return value
  }
 }
@@ -49,24 +50,32 @@ class RadioGroupWrapper implements RadioGroup {
   this.value = ''
  }
 
- getOptions(options: any[]) {
-   if (!options) {
-    throw new Error('Options field in radio group must have value')
-   }
-   if (!Array.isArray(options)) {
-     throw new Error('Options field in radio group must be an array')
-   }
-   if (options.length === 0) {
-     throw new Error('Options field in radio group must not be empty')
-   }
-   return options.map((opt: any) => new RadioGroupOptionWrapper(opt))
+ getOptions(options: any[]): RadioGroupOption[] {
+  if (!options) {
+   throw new Error('Options field in radio group must have value')
+  }
+  if (!Array.isArray(options)) {
+   throw new Error('Options field in radio group must be an array')
+  }
+  if (options.length === 0) {
+   throw new Error('Options field in radio group must not be empty')
+  }
+  return options.map((opt: any) => new RadioGroupOptionWrapper(opt))
  }
 
- getLabel(label: string) {
+ getLabel(label: string): string {
   if (!label) {
    throw new Error('Label field in radio group must have value')
   }
   return label
+ }
+
+ setValue(value: string): void {
+  this.value = value
+ }
+
+ canSubmit(): boolean {
+  return Boolean(this.value)
  }
 }
 
@@ -81,17 +90,28 @@ class TextInputWrapper implements TextInput {
   this.value = ''
  }
 
- getLabel(label: string) {
+ canSubmit(): boolean {
+  const res = this.expected
+   ? this.expected.trim().toLowerCase() === this.value.trim().toLowerCase()
+   : Boolean(this.value)
+  return res
+ }
+
+ getLabel(label: string): string {
   if (!label) {
    throw new Error('Label field in text input must have value')
   }
   return label
  }
+
+ setValue(value: string): void {
+  this.value = value
+ }
 }
 
 class FormElementWrapper implements FormElement {
  type: string
- content: TextInput | RadioGroup | null
+ content: TextInput | RadioGroup
  beemind: BeeminderConfig | null
  enabled: boolean
  required: boolean
@@ -104,7 +124,11 @@ class FormElementWrapper implements FormElement {
   this.required = this.getRequired(data.required)
  }
 
- getType(type: string) {
+ canSubmit(): boolean {
+  return this.enabled && this.required ? this.content.canSubmit() : true
+ }
+
+ getType(type: string): string {
   if (!type) {
    throw new Error('Type is a required field of an element')
   }
@@ -145,24 +169,22 @@ class FormElementWrapper implements FormElement {
   }
  }
 
- getEnabled(enabled: boolean) {
+ getEnabled(enabled: boolean): boolean {
   if (typeof enabled !== 'boolean') {
    throw new Error('Enabled value must be boolean in beemind config')
   }
   return enabled
  }
 
- getRequired(required: boolean) {
+ getRequired(required: boolean): boolean {
   if (typeof required !== 'boolean') {
    throw new Error('Required value must be boolean in beemind config')
   }
   return required
  }
 
- setValue(value: string) {
-  if (this.content) {
-   this.content.value = value
-  }
+ setValue(value: string): void {
+  this.content.setValue(value)
  }
 }
 
@@ -181,6 +203,10 @@ class RandomCollectionWrapper implements RandomCollection {
   this.type = data.type
   this.elements = this.getElements(data.elements)
   this.selected = this.getSelected()
+ }
+
+ canSubmit(): boolean {
+  return this.elements[this.selected].canSubmit()
  }
 
  getSelected() {
@@ -225,6 +251,13 @@ class PageWrapper implements Page {
  constructor(data: any) {
   this.name = this.getName(data.name)
   this.elements = this.getElements(data.elements)
+ }
+
+ canSubmit() {
+  return this.elements.reduce(
+   (prev, element) => prev && element.canSubmit(),
+   true
+  )
  }
 
  getName(name: string) {
@@ -281,6 +314,17 @@ export default class FormWrapper implements Form {
   this.slug = this.getSlug(data.slug)
   this.name = this.getName(data.name)
   this.pages = this.getPages(data.pages)
+ }
+
+ canSubmit(): boolean {
+  return this.pages.reduce(
+   (prev: boolean, page) => prev && page.canSubmit(),
+   true
+  )
+ }
+
+ canSubmitPage(index: number): boolean {
+  return this.pages[index].canSubmit()
  }
 
  getSlug(slug: string) {
