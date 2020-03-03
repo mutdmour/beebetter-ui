@@ -11,7 +11,7 @@ export default Vue.extend({
  props: ['element'],
  computed: {
   classes() {
-   const classes = 'form-element px-md-5 mb-2 '
+   const classes = 'form-element px-4 mb-2 '
    if (this.$props.element.invalid) {
     return classes + 'border border-danger rounded'
    }
