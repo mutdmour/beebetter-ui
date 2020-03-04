@@ -171,6 +171,10 @@ class FormElementWrapper implements FormElement {
   this.validated = false
  }
 
+ setValidated(validated: boolean): void {
+  this.validated = validated
+ }
+
  getJSON(): FormElementJSON {
   return {
    type: this.type,
@@ -182,14 +186,11 @@ class FormElementWrapper implements FormElement {
  }
 
  get invalid(): boolean {
-  return this.validated && this.enabled && this.required
-   ? !this.content.canSubmit()
-   : false
+  return this.enabled && this.required && this.validated && !this.canSubmit()
  }
 
  canSubmit(): boolean {
-  this.validated = true
-  return !this.invalid
+  return this.enabled && this.required ? this.content.canSubmit() : true
  }
 
  getType(type: string): string {
@@ -271,6 +272,10 @@ class RandomCollectionWrapper implements RandomCollection {
   this.type = 'random'
  }
 
+ setValidated(validated: boolean): void {
+  this.elements.forEach(element => element.setValidated(validated))
+ }
+
  getJSON(): RandomCollectionJSON {
   return {
    type: this.type,
@@ -326,6 +331,10 @@ class PageWrapper implements Page {
  constructor(data: PageJSON) {
   this.name = this.getName(data.name)
   this.elements = this.getElements(data.elements)
+ }
+
+ validate(): void {
+  this.elements.forEach(element => element.setValidated(true))
  }
 
  getJSON(): PageJSON {
@@ -396,6 +405,10 @@ export default class FormWrapper implements Form {
   this.slug = this.getSlug(data.slug)
   this.name = this.getName(data.name)
   this.pages = this.getPages(data.pages)
+ }
+
+ validatePage(pageIndex: number): void {
+  this.pages[pageIndex].validate()
  }
 
  getJSON(): FormJSON {

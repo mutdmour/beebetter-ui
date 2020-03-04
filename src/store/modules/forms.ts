@@ -38,6 +38,7 @@ const actions = {
  ) => {
   return new Promise((resolve, reject) => {
    const currentForm = getters.currentForm(context.state)
+   context.commit('validatePage', pageIndex)
    if (currentForm?.canSubmitPage(pageIndex)) {
     return resolve()
    }
@@ -66,6 +67,12 @@ const mutations = {
   const matches = state.forms.filter(form => form.slug == state.currentFormSlug)
   if (matches.length > 0) {
    matches[0] = form
+  }
+ },
+ validatePage(state: FormsState, pageIndex: number) {
+  const form = getters.currentForm(state)
+  if (form) {
+   form.validatePage(pageIndex)
   }
  },
  updateElement(

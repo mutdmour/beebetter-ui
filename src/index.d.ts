@@ -53,13 +53,14 @@ declare namespace beebetter {
   type: RandomCollectionType
  }
 
- interface RandomCollection {
+ interface RandomCollection extends RandomCollectionJSON {
   selected: number
   elements: FormElement[]
 
   setValue: (value: string) => void
   canSubmit: () => boolean
   getJSON: () => RandomCollectionJSON
+  setValidated: (validated: boolean) => void
  }
 
  interface FormElementJSON {
@@ -77,6 +78,7 @@ declare namespace beebetter {
   setValue: (value: string) => void
   canSubmit: () => boolean
   getJSON: () => FormElementJSON
+  setValidated: (validated: boolean) => void
  }
 
  type ElementJSONType = FormElementJSON | RandomCollectionJSON
@@ -86,13 +88,14 @@ declare namespace beebetter {
  }
 
  type ElementType = FormElement | RandomCollection
- interface Page {
+ interface Page extends PageJSON {
   elements: ElementType[]
 
   getElement: (index: number) => FormElement | RandomCollection | null
   setValue: (elementIndex: number, value: string) => void
   canSubmit: () => boolean
   getJSON: () => PageJSON
+  valdiate: () => void
  }
 
  interface FormJSON {
@@ -101,7 +104,7 @@ declare namespace beebetter {
   pages: PageJSON[]
  }
 
- interface Form {
+ interface Form extends FormJSON {
   pages: Page[]
 
   getPage: (index: number) => Page | null
@@ -109,6 +112,7 @@ declare namespace beebetter {
   canSubmit: () => boolean
   canSubmitPage: (pageIndex: number) => boolean
   getJSON: () => FormJSON
+  validatePage: (pageIndex: number) => void
  }
 
  interface FormsState {

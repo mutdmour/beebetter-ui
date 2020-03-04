@@ -9,7 +9,7 @@
    v-on:input="updateValue"
   />
   <radio-group
-   v-else-if="element.type === 'radiogroup'"
+   v-else-if="element.type === 'radio'"
    :label="element.content.label"
    :options="element.content.options"
    :value="element.content.value"
