@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
  Page,
  Form,
@@ -8,6 +7,15 @@ import {
  RadioGroupOption,
  RandomCollection,
  BeeminderConfig,
+ RadioGroupOptionJSON,
+ RadioGroupJSON,
+ TextInputJSON,
+ FormElementJSON,
+ RandomCollectionJSON,
+ PageJSON,
+ ElementType,
+ ElementJSONType,
+ FormJSON,
 } from '../index'
 import { isAlphaNumericAndLowercase } from './helpers'
 
@@ -15,7 +23,7 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
  label: string
  value: string
 
- constructor(data: any) {
+ constructor(data: RadioGroupOptionJSON) {
   this.label = this.getLabel(data.label)
   this.value = this.getValue(data.value)
  }
@@ -37,20 +45,42 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
 
   return value
  }
+
+ getJSON() {
+  return {
+   label: this.label,
+   value: this.value,
+  }
+ }
+}
+
+function isRadioGroup(type: string, x: any): x is RadioGroupJSON {
+ return type === 'radio'
 }
 
 class RadioGroupWrapper implements RadioGroup {
  label: string
  options: RadioGroupOption[]
  value: string
+ type: 'radio'
 
- constructor(data: any) {
+ constructor(data: RadioGroupJSON) {
   this.label = this.getLabel(data.label)
   this.options = this.getOptions(data.options)
   this.value = ''
+  this.type = 'radio'
  }
 
- getOptions(options: any[]): RadioGroupOption[] {
+ getJSON() {
+  return {
+   label: this.label,
+   options: this.options.map(opt => opt.getJSON()),
+   value: this.value,
+   type: this.type,
+  }
+ }
+
+ getOptions(options: RadioGroupOptionJSON[]): RadioGroupOption[] {
   if (!options) {
    throw new Error('Options field in radio group must have value')
   }
@@ -60,7 +90,9 @@ class RadioGroupWrapper implements RadioGroup {
   if (options.length === 0) {
    throw new Error('Options field in radio group must not be empty')
   }
-  return options.map((opt: any) => new RadioGroupOptionWrapper(opt))
+  return options.map(
+   (opt: RadioGroupOptionJSON) => new RadioGroupOptionWrapper(opt)
+  )
  }
 
  getLabel(label: string): string {
@@ -79,15 +111,30 @@ class RadioGroupWrapper implements RadioGroup {
  }
 }
 
+function isTextInput(type: any, x: any): x is TextInputJSON {
+ return type === 'text'
+}
+
 class TextInputWrapper implements TextInput {
+ type: 'text'
  label: string
  value: string
  expected: string | null
 
- constructor(data: any) {
+ constructor(data: TextInputJSON) {
   this.label = this.getLabel(data.label)
   this.expected = data.expected || null
   this.value = ''
+  this.type = 'text'
+ }
+
+ getJSON() {
+  return {
+   label: this.label,
+   value: this.value,
+   expected: this.expected,
+   type: this.type,
+  }
  }
 
  canSubmit(): boolean {
@@ -117,13 +164,23 @@ class FormElementWrapper implements FormElement {
  required: boolean
  validated: boolean
 
- constructor(data: any) {
+ constructor(data: FormElementJSON) {
   this.type = this.getType(data.type)
   this.beemind = this.getBeeminderConfig(data.beemind)
   this.content = this.getContent(data.type, data.content)
   this.enabled = this.getEnabled(data.enabled)
   this.required = this.getRequired(data.required)
   this.validated = false
+ }
+
+ getJSON() {
+  return {
+   type: this.type,
+   content: this.content.getJSON(),
+   enabled: this.enabled,
+   required: this.required,
+   beemind: this.beemind,
+  }
  }
 
  get invalid(): boolean {
@@ -144,7 +201,7 @@ class FormElementWrapper implements FormElement {
   return type
  }
 
- getBeeminderConfig(config: any): BeeminderConfig | null {
+ getBeeminderConfig(config: BeeminderConfig | null): BeeminderConfig | null {
   if (config) {
    if (typeof config !== 'object') {
     throw new Error('Beemind config must be an object')
@@ -167,15 +224,13 @@ class FormElementWrapper implements FormElement {
   return null
  }
 
- getContent(type: string, content: any) {
-  switch (type) {
-   case 'text':
-    return new TextInputWrapper(content)
-   case 'radiogroup':
-    return new RadioGroupWrapper(content)
-   default:
-    throw new Error(`Unknown element type: ${type}`)
+ getContent(type: string, content: unknown) {
+  if (isTextInput(type, content)) {
+   return new TextInputWrapper(content)
+  } else if (isRadioGroup(type, content)) {
+   return new RadioGroupWrapper(content)
   }
+  throw new Error(`Unknown element type: ${type}`)
  }
 
  getEnabled(enabled: boolean): boolean {
@@ -197,21 +252,32 @@ class FormElementWrapper implements FormElement {
  }
 }
 
+function isRandomCollection(x: any): x is RandomCollectionJSON {
+ return x && x.type === 'random'
+}
+
 class RandomCollectionWrapper implements RandomCollection {
- type: string
+ type: 'random'
  elements: FormElement[]
  selected: number
 
- constructor(data: any) {
+ constructor(data: RandomCollectionJSON) {
   if (!data) {
    throw new Error('Element must have necessarily details')
   }
   if (data.type !== 'random') {
    throw new Error('Element must have type: random')
   }
-  this.type = data.type
   this.elements = this.getElements(data.elements)
   this.selected = this.getSelected()
+  this.type = 'random'
+ }
+
+ getJSON() {
+  return {
+   type: this.type,
+   elements: this.elements.map(element => element.getJSON()),
+  }
  }
 
  canSubmit(): boolean {
@@ -226,7 +292,7 @@ class RandomCollectionWrapper implements RandomCollection {
   return enabled[selected].i
  }
 
- getElements(elements: any[]) {
+ getElements(elements: FormElementJSON[]) {
   if (!elements) {
    throw new Error('elements is required field of form')
   }
@@ -236,7 +302,9 @@ class RandomCollectionWrapper implements RandomCollection {
   if (elements.length === 0) {
    throw new Error('page elements must have length of more than 0')
   }
-  return elements.map((element: any) => new FormElementWrapper(element))
+  return elements.map(
+   (element: FormElementJSON) => new FormElementWrapper(element)
+  )
  }
 
  getElement(index: number) {
@@ -255,11 +323,18 @@ class RandomCollectionWrapper implements RandomCollection {
 
 class PageWrapper implements Page {
  name: string
- elements: (FormElement | RandomCollection)[]
+ elements: ElementType[]
 
- constructor(data: any) {
+ constructor(data: PageJSON) {
   this.name = this.getName(data.name)
   this.elements = this.getElements(data.elements)
+ }
+
+ getJSON() {
+  return {
+   name: this.name,
+   elements: this.elements.map(element => element.getJSON()),
+  }
  }
 
  canSubmit() {
@@ -278,7 +353,7 @@ class PageWrapper implements Page {
   return name
  }
 
- getElements(elements: any[]) {
+ getElements(elements: ElementJSONType[]) {
   if (!elements) {
    throw new Error('elements is required field of form')
   }
@@ -288,14 +363,15 @@ class PageWrapper implements Page {
   if (elements.length === 0) {
    throw new Error('page elements must have length of more than 0')
   }
-  return elements.map((element: any) => this.getFormElement(element))
+  return elements.map((element: ElementJSONType) =>
+   this.getFormElement(element)
+  )
  }
 
  getFormElement(element: any) {
-  if (element.type === 'random') {
+  if (isRandomCollection(element)) {
    return new RandomCollectionWrapper(element)
   }
-
   return new FormElementWrapper(element)
  }
 
@@ -318,10 +394,18 @@ export default class FormWrapper implements Form {
  name: string
  pages: Page[]
 
- constructor(data: any) {
+ constructor(data: FormJSON) {
   this.slug = this.getSlug(data.slug)
   this.name = this.getName(data.name)
   this.pages = this.getPages(data.pages)
+ }
+
+ getJSON() {
+  return {
+   slug: this.slug,
+   pages: this.pages.map(page => page.getJSON()),
+   name: this.name,
+  }
  }
 
  canSubmit(): boolean {
@@ -359,7 +443,7 @@ export default class FormWrapper implements Form {
   return name
  }
 
- getPages(pages: any[]) {
+ getPages(pages: PageJSON[]) {
   if (!pages) {
    throw new Error('form pages is required field of form')
   }
@@ -369,7 +453,7 @@ export default class FormWrapper implements Form {
   if (pages.length === 0) {
    throw new Error('form pages must have length of more than 0')
   }
-  return pages.map((page: any) => new PageWrapper(page))
+  return pages.map((page: PageJSON) => new PageWrapper(page))
  }
 
  getPage(index: number) {

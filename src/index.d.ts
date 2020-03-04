@@ -1,23 +1,43 @@
 declare namespace beebetter {
- interface RadioGroupOption {
+ interface RadioGroupOptionJSON {
   label: string
   value: string
  }
 
- interface RadioGroup {
+ interface RadioGroupOption extends RadioGroupOptionJSON {
+  getJSON: () => RadioGroupOptionJSON
+ }
+
+ type RadioGroupType = 'radio'
+
+ interface RadioGroupJSON {
+  type: RadioGroupType
   label: string
-  options: RadioGroupOption[]
+  options: RadioGroupOptionJSON[]
   value: string
+ }
+
+ interface RadioGroup extends RadioGroupJSON {
+  options: RadioGroupOption[]
+
   canSubmit: () => boolean
   setValue: (value: string) => void
+  getJSON: () => RadioGroupJSON
  }
 
- interface TextInput {
+ type TextType = 'text'
+
+ interface TextInputJSON {
+  type: TextType
   label: string
   value: string
   expected: string | null
+ }
+
+ interface TextInput extends TextInputJSON {
   canSubmit: () => boolean
   setValue: (value: string) => void
+  getJSON: () => TextInputJSON
  }
 
  interface BeeminderConfig {
@@ -25,44 +45,69 @@ declare namespace beebetter {
   goalName: string
  }
 
- interface RandomCollection {
-  elements: FormElement[]
-  selected: number
-  type: string
-  setValue: (value: string) => void
-  canSubmit: () => boolean
+ type RandomCollectionType = 'random'
+
+ interface RandomCollectionJSON {
+  elements: FormElementJSON[]
+  type: RandomCollectionType
  }
 
- interface FormElement {
+ interface RandomCollection {
+  selected: number
+  elements: FormElement[]
+
+  setValue: (value: string) => void
+  canSubmit: () => boolean
+  getJSON: () => RandomCollectionJSON
+ }
+
+ interface FormElementJSON {
   type: string
   enabled: boolean
   required: boolean
   beemind: BeeminderConfig | null
+  content: TextInputJSON | RadioGroupJSON
+ }
+
+ interface FormElement extends FormElementJSON {
   content: TextInput | RadioGroup
   invalid: boolean
 
   setValue: (value: string) => void
   canSubmit: () => boolean
+  getJSON: () => FormElementJSON
  }
 
- interface Page {
+ type ElementJSONType = FormElementJSON | RandomCollectionJSON
+ interface PageJSON {
   name: string
-  elements: (FormElement | RandomCollection)[]
+  elements: ElementJSONType[]
+ }
+
+ type ElementType = FormElement | RandomCollection
+ interface Page {
+  elements: ElementType[]
 
   getElement: (index: number) => FormElement | RandomCollection | null
   setValue: (elementIndex: number, value: string) => void
   canSubmit: () => boolean
+  getJSON: () => PageJSON
+ }
+
+ interface FormJSON {
+  slug: string
+  name: string
+  pages: PageJSON[]
  }
 
  interface Form {
-  slug: string
-  name: string
   pages: Page[]
 
   getPage: (index: number) => Page | null
   setValue: (pageIndex: number, elementIndex: number, value: string) => void
   canSubmit: () => boolean
   canSubmitPage: (pageIndex: number) => boolean
+  getJSON: () => FormJSON
  }
 
  interface FormsState {

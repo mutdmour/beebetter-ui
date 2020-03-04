@@ -44,7 +44,7 @@ const getMockResponse = () => [
       ],
      },
      {
-      type: 'radiogroup',
+      type: 'radio',
       enabled: true,
       required: true,
       beemind: {
