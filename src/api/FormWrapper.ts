@@ -46,7 +46,7 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
   return value
  }
 
- getJSON() {
+ getJSON(): RadioGroupOptionJSON {
   return {
    label: this.label,
    value: this.value,
@@ -71,11 +71,10 @@ class RadioGroupWrapper implements RadioGroup {
   this.type = 'radio'
  }
 
- getJSON() {
+ getJSON(): RadioGroupJSON {
   return {
    label: this.label,
    options: this.options.map(opt => opt.getJSON()),
-   value: this.value,
    type: this.type,
   }
  }
@@ -128,10 +127,9 @@ class TextInputWrapper implements TextInput {
   this.type = 'text'
  }
 
- getJSON() {
+ getJSON(): TextInputJSON {
   return {
    label: this.label,
-   value: this.value,
    expected: this.expected,
    type: this.type,
   }
@@ -173,7 +171,7 @@ class FormElementWrapper implements FormElement {
   this.validated = false
  }
 
- getJSON() {
+ getJSON(): FormElementJSON {
   return {
    type: this.type,
    content: this.content.getJSON(),
@@ -273,7 +271,7 @@ class RandomCollectionWrapper implements RandomCollection {
   this.type = 'random'
  }
 
- getJSON() {
+ getJSON(): RandomCollectionJSON {
   return {
    type: this.type,
    elements: this.elements.map(element => element.getJSON()),
@@ -330,7 +328,7 @@ class PageWrapper implements Page {
   this.elements = this.getElements(data.elements)
  }
 
- getJSON() {
+ getJSON(): PageJSON {
   return {
    name: this.name,
    elements: this.elements.map(element => element.getJSON()),
@@ -400,7 +398,7 @@ export default class FormWrapper implements Form {
   this.pages = this.getPages(data.pages)
  }
 
- getJSON() {
+ getJSON(): FormJSON {
   return {
    slug: this.slug,
    pages: this.pages.map(page => page.getJSON()),

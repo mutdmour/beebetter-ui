@@ -14,10 +14,10 @@ declare namespace beebetter {
   type: RadioGroupType
   label: string
   options: RadioGroupOptionJSON[]
-  value: string
  }
 
  interface RadioGroup extends RadioGroupJSON {
+  value: string
   options: RadioGroupOption[]
 
   canSubmit: () => boolean
@@ -30,11 +30,12 @@ declare namespace beebetter {
  interface TextInputJSON {
   type: TextType
   label: string
-  value: string
   expected: string | null
  }
 
  interface TextInput extends TextInputJSON {
+  value: string
+
   canSubmit: () => boolean
   setValue: (value: string) => void
   getJSON: () => TextInputJSON
