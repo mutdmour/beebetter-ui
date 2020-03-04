@@ -47,11 +47,25 @@ export default Vue.extend({
  },
  methods: {
   updateForm(form: Form) {
-   this.$store.dispatch('forms/updateForm', form).catch((e: string) => {
-    alert(e)
-   })
+   this.$store
+    .dispatch('forms/updateForm', form)
+    .then(() => {
+     this.$bvToast.toast('Form saved successfully', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
+    .catch((e: string) => {
+     this.$bvToast.toast(`Error: ${e}`, {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
   },
  },
 })
 </script>
-

@@ -45,10 +45,20 @@ export default Vue.extend({
    this.$store
     .dispatch('forms/submitForm')
     .then(() => {
-     alert('success')
+     this.$bvToast.toast('Form submitted successfully', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
     })
     .catch(() => {
-     alert('error')
+     this.$bvToast.toast('Error: there was an issue with form submission', {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
     })
   },
  },

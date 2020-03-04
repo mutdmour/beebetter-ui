@@ -62,6 +62,12 @@ const mutations = {
  setForms(state: FormsState, forms: Form[]) {
   state.forms = forms
  },
+ setForm(state: FormsState, form: Form) {
+  const matches = state.forms.filter(form => form.slug == state.currentFormSlug)
+  if (matches.length > 0) {
+   matches[0] = form
+  }
+ },
  updateElement(
   state: FormsState,
   payload: {

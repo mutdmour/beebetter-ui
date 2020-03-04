@@ -4,15 +4,13 @@ export default Vue.extend({
  props: ['input'],
  data() {
   return {
-   newJson: '',
+   newJson: JSON.stringify(this.$props.input, null, 2),
   }
  },
  computed: {
   json: {
    get() {
     return this.$data.newJson
-     ? this.$data.newJson
-     : JSON.stringify(this.$props.input, null, 2)
    },
    set(newJSON: string) {
     this.newJson = newJSON
@@ -26,7 +24,12 @@ export default Vue.extend({
     const json = JSON.parse(this.newJson)
     this.$emit('submit', json)
    } catch (e) {
-    alert('Error occurred, JSON likely invalid')
+    this.$bvToast.toast('Invalid JSON object', {
+     variant: 'danger',
+     solid: false,
+     appendToast: true,
+     noCloseButton: true,
+    })
    }
   },
  },
