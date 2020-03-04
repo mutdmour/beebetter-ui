@@ -88,6 +88,7 @@ declare namespace beebetter {
  }
 
  type ElementType = FormElement | RandomCollection
+
  interface Page extends PageJSON {
   elements: ElementType[]
 
@@ -95,7 +96,7 @@ declare namespace beebetter {
   setValue: (elementIndex: number, value: string) => void
   canSubmit: () => boolean
   getJSON: () => PageJSON
-  valdiate: () => void
+  validate: () => void
  }
 
  interface FormJSON {

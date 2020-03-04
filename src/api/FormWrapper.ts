@@ -345,9 +345,7 @@ class PageWrapper implements Page {
  }
 
  canSubmit() {
-  return this.elements
-   .map(element => element.canSubmit())
-   .reduce((prev, curr) => prev && curr, true)
+  return this.elements.reduce((prev, el) => prev && el.canSubmit(), true)
  }
 
  getName(name: string) {
