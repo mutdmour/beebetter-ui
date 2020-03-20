@@ -11,7 +11,6 @@ declare namespace beebetter {
  type RadioGroupType = 'radio'
 
  interface RadioGroupJSON {
-  type: RadioGroupType
   label: string
   options: RadioGroupOptionJSON[]
  }
@@ -25,10 +24,7 @@ declare namespace beebetter {
   getJSON: () => RadioGroupJSON
  }
 
- type TextType = 'text'
-
  interface TextInputJSON {
-  type: TextType
   label: string
   expected: string | null
  }
@@ -42,7 +38,7 @@ declare namespace beebetter {
  }
 
  interface BeeminderConfig {
-  enabled: true
+  enabled: boolean
   goalName: string
  }
 
@@ -100,12 +96,18 @@ declare namespace beebetter {
  }
 
  interface FormJSON {
+  id: number
   slug: string
-  name: string
-  pages: PageJSON[]
+  config: {
+   name: string
+   pages: PageJSON[]
+  }
  }
 
- interface Form extends FormJSON {
+ interface Form {
+  id: number
+  slug: string
+  name: string
   pages: Page[]
 
   getPage: (index: number) => Page | null

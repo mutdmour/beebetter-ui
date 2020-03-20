@@ -1,102 +1,113 @@
-import { Form } from '../index'
+import { Form, FormJSON } from '../index'
 import FormWrapper from './FormWrapper'
 
 /**
  * Mocking client-server processing
  */
-const getMockResponse = () => [
- {
-  slug: 'daily',
-  name: 'Daily Form',
-  pages: [
-   {
-    name: 'page1',
-    elements: [
+const getMockResponse = (): { forms: [FormJSON] } => ({
+ forms: [
+  {
+   id: 1,
+   slug: 'daily',
+   config: {
+    name: 'Daily Form',
+    pages: [
      {
-      type: 'text',
-      enabled: true,
-      required: true,
-      content: {
-       label: 'Sup?',
-      },
-     },
-     {
-      type: 'random',
-      enabled: true,
-      required: false,
+      name: 'page1',
       elements: [
-       {
-        type: 'text',
-        enabled: true,
-        required: false,
-        content: {
-         label: 'randA',
-        },
-       },
        {
         type: 'text',
         enabled: true,
         required: true,
         content: {
-         label: 'randB',
+         label: 'Sup?',
+         expected: null,
+        },
+        beemind: null,
+       },
+       {
+        type: 'random',
+        elements: [
+         {
+          type: 'text',
+          enabled: true,
+          required: false,
+          beemind: null,
+          content: {
+           label: 'randA',
+           expected: null,
+          },
+         },
+         {
+          type: 'text',
+          enabled: true,
+          beemind: null,
+          required: true,
+          content: {
+           label: 'randB',
+           expected: null,
+          },
+         },
+        ],
+       },
+       {
+        type: 'radio',
+        enabled: true,
+        required: true,
+        beemind: {
+         enabled: true,
+         goalName: 'goal',
+        },
+        content: {
+         label: 'Pick one:',
+         options: [
+          {
+           label: 'opt1',
+           value: '1',
+          },
+          {
+           label: 'opt2',
+           value: '0',
+          },
+         ],
         },
        },
       ],
      },
      {
-      type: 'radio',
-      enabled: true,
-      required: true,
-      beemind: {
-       enabled: true,
-       goalName: 'goal',
-      },
-      content: {
-       label: 'Pick one:',
-       options: [
-        {
-         label: 'opt1',
-         value: '1',
+      name: 'page2',
+      elements: [
+       {
+        type: 'text',
+        enabled: false,
+        required: true,
+        beemind: null,
+        content: {
+         label: 'disabled?',
+         expected: null,
         },
-        {
-         label: 'opt2',
-         value: '0',
+       },
+       {
+        type: 'text',
+        enabled: true,
+        required: false,
+        beemind: null,
+        content: {
+         label: 'expected?',
+         expected: 'expected',
         },
-       ],
-      },
+       },
+      ],
      },
     ],
    },
-   {
-    name: 'page2',
-    elements: [
-     {
-      type: 'text',
-      enabled: false,
-      required: true,
-      content: {
-       label: 'disabled?',
-      },
-     },
-     {
-      type: 'text',
-      enabled: true,
-      required: false,
-      content: {
-       label: 'expected?',
-       expected: 'expected',
-      },
-     },
-    ],
-   },
-  ],
- },
- //  { slug: 'time', name: 'time', pages: [] },
-]
+  },
+ ],
+})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const wrapFormData = (forms: any[]): Form[] => {
- return forms && forms.map(data => new FormWrapper(data))
+const wrapFormData = (data: {forms: [FormJSON]}): Form[] => {
+ return data && data.forms && data.forms.map(form => new FormWrapper(form))
 }
 
 export function getForms(cb: (forms: Form[]) => void) {

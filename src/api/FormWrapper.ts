@@ -75,7 +75,6 @@ class RadioGroupWrapper implements RadioGroup {
   return {
    label: this.label,
    options: this.options.map(opt => opt.getJSON()),
-   type: this.type,
   }
  }
 
@@ -115,7 +114,6 @@ function isTextInput(type: any, x: any): x is TextInputJSON {
 }
 
 class TextInputWrapper implements TextInput {
- type: 'text'
  label: string
  value: string
  expected: string | null
@@ -124,14 +122,12 @@ class TextInputWrapper implements TextInput {
   this.label = this.getLabel(data.label)
   this.expected = data.expected || null
   this.value = ''
-  this.type = 'text'
  }
 
  getJSON(): TextInputJSON {
   return {
    label: this.label,
    expected: this.expected,
-   type: this.type,
   }
  }
 
@@ -398,11 +394,13 @@ export default class FormWrapper implements Form {
  slug: string
  name: string
  pages: Page[]
+ id: number
 
  constructor(data: FormJSON) {
+  this.id = this.getId(data.id)
   this.slug = this.getSlug(data.slug)
-  this.name = this.getName(data.name)
-  this.pages = this.getPages(data.pages)
+  this.name = this.getName(data.config.name)
+  this.pages = this.getPages(data.config.pages)
  }
 
  validatePage(pageIndex: number): void {
@@ -411,9 +409,12 @@ export default class FormWrapper implements Form {
 
  getJSON(): FormJSON {
   return {
+   id: this.id,
    slug: this.slug,
-   pages: this.pages.map(page => page.getJSON()),
-   name: this.name,
+   config: {
+    pages: this.pages.map(page => page.getJSON()),
+    name: this.name,
+   },
   }
  }
 
@@ -426,6 +427,17 @@ export default class FormWrapper implements Form {
 
  canSubmitPage(index: number): boolean {
   return this.pages[index].canSubmit()
+ }
+
+ getId(id: number) {
+  if (!id) {
+   throw new Error('Id for form is required')
+  }
+  if (typeof id !== 'number') {
+   throw new Error('Id must be of type number')
+  }
+
+  return id
  }
 
  getSlug(slug: string) {
