@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import FormsList from '../views/FormsList.vue'
 import FormEdit from '../views/FormEdit.vue'
 import FormView from '../views/FormView.vue'
+import LoginView from '../views/LoginView.vue'
+import SignupView from '../views/SignupView.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +23,16 @@ const routes = [
   path: '/forms/:name',
   name: 'Form',
   component: FormView,
+ },
+ {
+  path: '/login',
+  name: 'LogIn',
+  component: LoginView,
+ },
+ {
+  path: '/signup',
+  name: 'Signup',
+  component: SignupView,
  },
 ]
 
