@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { Form, FormsState } from '../../index'
-// import { getForms, updateForm } from '../../api/forms'
-// import { ActionContext } from 'vuex'
+import { login } from '../../api/user'
+import { ActionContext } from 'vuex'
 
 declare interface User {
  email: string
@@ -21,7 +22,14 @@ const getters = {
  },
 }
 
-const actions = {}
+const actions = {
+ login: (
+  context: ActionContext<any, unknown>,
+  loginDetails: { username: string; password: string }
+ ) => {
+  login(loginDetails.username, loginDetails.password)
+ },
+}
 
 const mutations = {}
 

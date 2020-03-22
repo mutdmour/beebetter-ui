@@ -1,7 +1,8 @@
 import { Form, FormJSON } from '../index'
 import FormWrapper from './FormWrapper'
+import { getAPIBaseUrl } from './helpers'
 
-const BASE_URL = process.env.VUE_APP_BEEBETTER_APP_BASE
+const BASE_URL = getAPIBaseUrl()
 const GET_ALL_FORMS_ENDPOINT = BASE_URL + '/forms'
 
 const notEmpty = <TValue>(

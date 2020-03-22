@@ -55,7 +55,10 @@ export default Vue.extend({
  methods: {
   onSubmit(event) {
    event.preventDefault()
-   alert(JSON.stringify(this.form))
+   this.$store.dispatch('user/login', {
+    username: this.form.email,
+    password: this.form.password,
+   })
   },
  },
  watch: {

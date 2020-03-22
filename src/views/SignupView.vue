@@ -89,7 +89,13 @@ export default Vue.extend({
 
     return
    }
-   alert(JSON.stringify(this.form))
+
+   this.$store.commit('user/signup', {
+    username: this.form.email,
+    password: this.form.password,
+    beeminderUsername: this.form.beeminderUsername,
+    beeminderAuthToken: this.form.beeminderAuthToken,
+   })
   },
  },
  watch: {
