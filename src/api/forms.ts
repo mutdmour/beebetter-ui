@@ -30,7 +30,8 @@ const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
 export function getForms(cb: (forms: Form[]) => void) {
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
  fetch(GET_ALL_FORMS_ENDPOINT, {
-  mode: 'cors'
+  mode: 'cors',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
  }).then((results: any) => {
   cb(wrapFormData(results))
  })

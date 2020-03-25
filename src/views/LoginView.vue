@@ -40,7 +40,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Route } from 'vue-router'
 
 export default Vue.extend({
  name: 'LoginView',
@@ -53,7 +52,8 @@ export default Vue.extend({
   }
  },
  methods: {
-  onSubmit(event) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSubmit(event: any) {
    event.preventDefault()
    this.$store.dispatch('user/login', {
     username: this.form.email,
@@ -62,8 +62,8 @@ export default Vue.extend({
   },
  },
  watch: {
-  $route(to: Route) {
-   // todo
+  $route() {
+   // SPA navigation
   },
  },
 })

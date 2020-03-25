@@ -62,7 +62,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Route } from 'vue-router'
 
 export default Vue.extend({
  name: 'SignupView',
@@ -77,7 +76,8 @@ export default Vue.extend({
   }
  },
  methods: {
-  onSubmit(event) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSubmit(event: any) {
    event.preventDefault()
    if (this.form.password.length < 6) {
     this.$bvToast.toast('Password must be at least 6 characters long', {
@@ -99,8 +99,8 @@ export default Vue.extend({
   },
  },
  watch: {
-  $route(to: Route) {
-   // todo
+  $route() {
+   // SPA navigation
   },
  },
 })
