@@ -20,7 +20,8 @@ const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
         try {
           return new FormWrapper(form);
         } catch (e) {
-          console.log(e);
+          // todo
+          // console.log(e);
         }
       })
       .filter(notEmpty)
