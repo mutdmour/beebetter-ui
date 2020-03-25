@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import forms from './modules/forms'
-import user from './modules/user'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import forms from './modules/forms';
+import user from './modules/user';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-const debug = process.env.NODE_ENV !== 'production'
+const debug = process.env.NODE_ENV !== 'production';
 
 export default new Vuex.Store({
- modules: {
-  forms,
-  user,
- },
- strict: debug,
-})
+  modules: {
+    forms,
+    user,
+  },
+  strict: debug,
+});
