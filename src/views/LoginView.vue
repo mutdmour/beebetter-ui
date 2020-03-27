@@ -55,10 +55,28 @@ export default Vue.extend({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit(event: any) {
    event.preventDefault()
-   this.$store.dispatch('user/login', {
-    username: this.form.email,
-    password: this.form.password,
-   })
+   this.$store
+    .dispatch('user/login', {
+     username: this.form.email,
+     password: this.form.password,
+    })
+    .then(() => {
+     this.$bvToast.toast('Logged in', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+     this.$router.push('/')
+    })
+    .catch(() => {
+     this.$bvToast.toast('Login failed', {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
   },
  },
  watch: {

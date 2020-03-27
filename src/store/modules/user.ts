@@ -4,21 +4,17 @@
 import { login } from '../../api/user'
 import { ActionContext } from 'vuex'
 
-declare interface User {
- email: string
-}
-
 declare interface UserState {
- user: null | User
+ loggedIn: boolean
 }
 
 const state: UserState = {
- user: null,
+ loggedIn: true,
 }
 
 const getters = {
  isLoggedIn: (state: UserState): boolean => {
-  return Boolean(state.user)
+  return state.loggedIn
  },
 }
 
@@ -27,11 +23,25 @@ const actions = {
   context: ActionContext<any, unknown>,
   loginDetails: { username: string; password: string }
  ) => {
-  login(loginDetails.username, loginDetails.password)
+  return new Promise((resolve, reject) => {
+   login(loginDetails.username, loginDetails.password)
+    .then(() => {
+     context.commit('setLogIn', true)
+     resolve()
+    })
+    .catch(() => {
+     context.commit('setLogIn', false)
+     reject()
+    })
+  })
  },
 }
 
-const mutations = {}
+const mutations = {
+ setLogIn: (state: UserState, loggedIn: boolean) => {
+  state.loggedIn = loggedIn
+ },
+}
 
 export default {
  namespaced: true,
