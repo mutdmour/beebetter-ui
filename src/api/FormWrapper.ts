@@ -18,7 +18,7 @@ import {
  ElementJSONType,
  FormJSON,
 } from '../index'
-import { isAlphaNumericAndLowercase } from './helpers'
+import { isAlphaNumericAndLowercase } from '../utils/helpers'
 
 class RadioGroupOptionWrapper implements RadioGroupOption {
  label: string

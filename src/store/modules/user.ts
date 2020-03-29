@@ -3,13 +3,14 @@
 // import { Form, FormsState } from '../../index'
 import { login } from '../../api/user'
 import { ActionContext } from 'vuex'
+import { isUserIdCookieSet } from '../../utils/helpers'
 
 declare interface UserState {
  loggedIn: boolean
 }
 
 const state: UserState = {
- loggedIn: true,
+ loggedIn: isUserIdCookieSet(),
 }
 
 const getters = {
@@ -26,20 +27,21 @@ const actions = {
   return new Promise((resolve, reject) => {
    login(loginDetails.username, loginDetails.password)
     .then(() => {
-     context.commit('setLogIn', true)
      resolve()
     })
     .catch(() => {
-     context.commit('setLogIn', false)
      reject()
+    })
+    .finally(() => {
+     context.commit('updateLogInStat')
     })
   })
  },
 }
 
 const mutations = {
- setLogIn: (state: UserState, loggedIn: boolean) => {
-  state.loggedIn = loggedIn
+ updateLogInState: (state: UserState) => {
+  state.loggedIn = isUserIdCookieSet()
  },
 }
 

@@ -5,6 +5,7 @@ import FormEdit from '../views/FormEdit.vue'
 import FormView from '../views/FormView.vue'
 import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
+import { isUserIdCookieSet } from '../utils/helpers'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,22 @@ const routes = [
 
 const router = new VueRouter({
  routes,
+})
+
+const isLogInOrSignUp = (path: string): boolean => {
+ return path === '/login' || path === '/signup'
+}
+
+router.beforeEach((to, from, next) => {
+ const isLoggedIn = isUserIdCookieSet()
+ if (!isLoggedIn && !isLogInOrSignUp(to.path)) {
+  next('/login')
+ }
+ if (isLoggedIn && isLogInOrSignUp(to.path)) {
+  next('/')
+ } else {
+  next()
+ }
 })
 
 export default router

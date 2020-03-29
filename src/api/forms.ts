@@ -1,9 +1,7 @@
 import { Form, FormJSON } from '../index'
 import FormWrapper from './FormWrapper'
-import { getAPIBaseUrl } from './helpers'
 
-const BASE_URL = getAPIBaseUrl()
-const GET_ALL_FORMS_ENDPOINT = BASE_URL + '/forms'
+const GET_ALL_FORMS_ENDPOINT = '/api/v1/forms'
 
 const notEmpty = <TValue>(
  value: TValue | null | undefined
