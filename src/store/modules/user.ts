@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { Form, FormsState } from '../../index'
-import { login } from '../../api/user'
+import { login, logout, signup } from '../../api/user'
 import { ActionContext } from 'vuex'
 import { isUserIdCookieSet } from '../../utils/helpers'
 
@@ -26,6 +26,47 @@ const actions = {
  ) => {
   return new Promise((resolve, reject) => {
    login(loginDetails.username, loginDetails.password)
+    .then(() => {
+     resolve()
+    })
+    .catch(() => {
+     reject()
+    })
+    .finally(() => {
+     context.commit('updateLogInStat')
+    })
+  })
+ },
+ logout: (context: ActionContext<any, unknown>) => {
+  return new Promise((resolve, reject) => {
+   logout()
+    .then(() => {
+     resolve()
+    })
+    .catch(() => {
+     reject()
+    })
+    .finally(() => {
+     context.commit('updateLogInStat')
+    })
+  })
+ },
+ signup: (
+  context: ActionContext<any, unknown>,
+  details: {
+   username: string
+   password: string
+   beeminderUsername: string
+   beeminderAuthToken: string
+  }
+ ) => {
+  return new Promise((resolve, reject) => {
+   signup(
+    details.username,
+    details.password,
+    details.beeminderUsername,
+    details.beeminderAuthToken
+   )
     .then(() => {
      resolve()
     })
