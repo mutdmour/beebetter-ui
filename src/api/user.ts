@@ -8,9 +8,13 @@ function makeRequest(endpoint: string, data: unknown) {
    method: 'post',
    headers: { 'Content-Type': 'application/json' },
    body: JSON.stringify(data),
-  }).then(data => {
-   data.ok ? resolve() : reject()
   })
+   .then(data => {
+    data.ok ? resolve() : reject()
+   })
+   .catch(() => {
+    reject()
+   })
  })
 }
 
@@ -18,9 +22,13 @@ export function logout() {
  return new Promise((resolve, reject) => {
   fetch(LOGOUT_ENDPOINT, {
    method: 'post',
-  }).then(data => {
-   data.ok ? resolve() : reject()
   })
+   .then(data => {
+    data.ok ? resolve() : reject()
+   })
+   .catch(() => {
+    reject()
+   })
  })
 }
 

@@ -33,7 +33,7 @@ const actions = {
      reject()
     })
     .finally(() => {
-     context.commit('updateLogInStat')
+     context.commit('updateLogIn')
     })
   })
  },
@@ -47,7 +47,7 @@ const actions = {
      reject()
     })
     .finally(() => {
-     context.commit('updateLogInStat')
+     context.commit('updateLogIn')
     })
   })
  },
@@ -74,14 +74,14 @@ const actions = {
      reject()
     })
     .finally(() => {
-     context.commit('updateLogInStat')
+     context.commit('updateLogIn')
     })
   })
  },
 }
 
 const mutations = {
- updateLogInState: (state: UserState) => {
+ updateLogIn: (state: UserState) => {
   state.loggedIn = isUserIdCookieSet()
  },
 }

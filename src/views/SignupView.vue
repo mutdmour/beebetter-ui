@@ -90,12 +90,30 @@ export default Vue.extend({
     return
    }
 
-   this.$store.commit('user/signup', {
-    username: this.form.email,
-    password: this.form.password,
-    beeminderUsername: this.form.beeminderUsername,
-    beeminderAuthToken: this.form.beeminderAuthToken,
-   })
+   this.$store
+    .dispatch('user/signup', {
+     username: this.form.email,
+     password: this.form.password,
+     beeminderUsername: this.form.beeminderUsername,
+     beeminderAuthToken: this.form.beeminderAuthToken,
+    })
+    .then(() => {
+     this.$bvToast.toast('Sign up succeeded', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+     this.$router.push('/')
+    })
+    .catch(() => {
+     this.$bvToast.toast('Sign up failed', {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
   },
  },
  watch: {
