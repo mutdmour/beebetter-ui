@@ -43,7 +43,7 @@ export default Vue.extend({
   },
   onSubmit(): void {
    this.$store
-    .dispatch('forms/submitForm')
+    .dispatch('forms/submit')
     .then(() => {
      this.$bvToast.toast('Form submitted successfully', {
       variant: 'success',

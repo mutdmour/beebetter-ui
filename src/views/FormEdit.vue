@@ -34,7 +34,7 @@ export default Vue.extend({
   'json-editor': JSONEditor,
  },
  created() {
-  this.$store.dispatch('forms/getAllForms')
+  this.$store.dispatch('forms/getAll')
   this.$store.commit(
    'forms/setCurrentFormSlug',
    this.$route.params && this.$route.params.name
@@ -48,7 +48,7 @@ export default Vue.extend({
  methods: {
   updateForm(form: FormJSON) {
    this.$store
-    .dispatch('forms/updateForm', { formId: this.form.id, form })
+    .dispatch('forms/update', { formId: this.form.id, form })
     .then(() => {
      this.$bvToast.toast('Form saved successfully', {
       variant: 'success',

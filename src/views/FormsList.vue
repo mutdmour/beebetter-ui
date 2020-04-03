@@ -30,6 +30,15 @@
      </b-dropdown>
     </b-col>
    </b-form-row>
+   <b-form-row v-if="createMode">
+    <b-form-group id="create-group-1" label="Url slug:" label-for="slug-input">
+     <b-form-input id="slug-input" v-model="slug" type="text"></b-form-input>
+    </b-form-group>
+    <b-button variant="primary" @click="onCreated">Create</b-button>
+   </b-form-row>
+   <b-form-row v-else>
+    <b-button variant="primary" @click="onCreate">Create new</b-button>
+   </b-form-row>
   </b-container>
  </div>
 </template>
@@ -40,14 +49,44 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
  name: 'FormsList',
+ data: () => ({
+  createMode: false,
+  slug: '',
+ }),
  created() {
-  this.$store.dispatch('forms/getAllForms')
+  this.$store.dispatch('forms/getAll')
  },
  computed: {
   ...mapState({
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    forms: (state: any) => state.forms.forms,
   }),
+ },
+ methods: {
+  onCreate: function() {
+   this.$data.createMode = true
+  },
+  onCreated: function() {
+   this.$store
+    .dispatch('forms/create', this.slug)
+    .then(() => {
+     this.$bvToast.toast('Form created successfully', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+     this.$router.push(`/forms/${this.slug}/edit`)
+    })
+    .catch(e => {
+     this.$bvToast.toast(e, {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
+  },
  },
 })
 </script>

@@ -2,12 +2,25 @@ import { FormJSON } from '../index'
 
 const GET_ALL_FORMS_ENDPOINT = '/api/v1/forms'
 const UPDATE_FORM_ENDPOINT = '/api/v1/forms/update?formId='
+const CREATE_FORM_ENDPOINT = '/api/v1/forms/create?slug='
 
 export function getForms() {
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
  return new Promise((resolve, reject) => {
   fetch(GET_ALL_FORMS_ENDPOINT).then(response => {
    response.ok ? resolve(response.json()) : reject()
+  })
+ })
+}
+
+export function createForm(slug: string) {
+ return new Promise((resolve, reject) => {
+  const url = `${CREATE_FORM_ENDPOINT}${slug}`
+  fetch(url, {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ slug }),
+  }).then(async response => {
+   response.ok ? resolve(await response.json()) : reject(await response.text())
   })
  })
 }
