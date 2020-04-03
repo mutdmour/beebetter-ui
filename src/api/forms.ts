@@ -1,47 +1,27 @@
-import { Form, FormJSON } from '../index'
-import FormWrapper from './FormWrapper'
+import { FormJSON } from '../index'
 
 const GET_ALL_FORMS_ENDPOINT = '/api/v1/forms'
+const UPDATE_FORM_ENDPOINT = '/api/v1/form/update?formId='
 
-const notEmpty = <TValue>(
- value: TValue | null | undefined
-): value is TValue => {
- return value !== null && value !== undefined
-}
-
-const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
- return (
-  data &&
-  data.forms &&
-  data.forms
-   .map(form => {
-    try {
-     return new FormWrapper(form)
-    } catch (e) {
-     // todo
-     // console.log(e);
-    }
-   })
-   .filter(notEmpty)
- )
-}
-
-export function getForms(cb: (forms: Form[]) => void) {
+export function getForms() {
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
- fetch(GET_ALL_FORMS_ENDPOINT, {
-  mode: 'cors',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
- }).then((results: any) => {
-  cb(wrapFormData(results))
+ return new Promise((resolve, reject) => {
+  fetch(GET_ALL_FORMS_ENDPOINT).then(response => {
+   response.ok ? resolve(response.json()) : reject()
+  })
  })
 }
 
-export function updateForm(form: Form, cb: (error: string | null) => void) {
- setTimeout(() => {
-  if (form.name === 'time') {
-   cb('Error calling update')
-  } else {
-   cb(null)
-  }
- }, 1000)
+export function updateForm(formId: number, form: FormJSON) {
+ const url = `${UPDATE_FORM_ENDPOINT}${formId}`
+
+ return new Promise((resolve, reject) => {
+  fetch(url, {
+   method: 'POST',
+   body: JSON.stringify(form),
+  }).then(async response => {
+   const body = await response.text()
+   response.ok ? resolve() : reject(body)
+  })
+ })
 }

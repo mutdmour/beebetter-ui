@@ -1,11 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, FormsState } from '../../index'
+import { Form, FormsState, FormJSON } from '../../index'
 import { getForms, updateForm } from '../../api/forms'
 import { ActionContext } from 'vuex'
+import FormWrapper from '@/api/FormWrapper'
 
 const state = {
  currentFormSlug: null,
  forms: [],
+}
+
+const notEmpty = <TValue>(
+ value: TValue | null | undefined
+): value is TValue => {
+ return value !== null && value !== undefined
+}
+
+const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
+ return (
+  data &&
+  data.forms &&
+  data.forms
+   .map(form => {
+    try {
+     return new FormWrapper(form)
+    } catch (e) {
+     console.log(e)
+    }
+   })
+   .filter(notEmpty)
+ )
 }
 
 const getters = {
@@ -17,19 +40,30 @@ const getters = {
 
 const actions = {
  getAllForms: (context: ActionContext<any, unknown>) => {
-  getForms((forms: Form[]) => {
-   context.commit('setForms', forms)
+  getForms().then((data: any) => {
+   context.commit('setForms', wrapFormData(data))
   })
  },
- updateForm: (context: ActionContext<any, unknown>, form: Form) => {
+ updateForm: (
+  context: ActionContext<any, unknown>,
+  data: { formId: number; form: FormJSON }
+ ) => {
   return new Promise((resolve, reject) => {
-   updateForm(form, (error: string | null) => {
-    if (error) {
-     return reject(error)
-    }
-    context.commit('setForm', form)
-    resolve()
-   })
+   try {
+    const updated = new FormWrapper(data.form)
+    updateForm(data.formId, updated.getJSON())
+     .then(() => {
+      resolve()
+     })
+     .catch((e) => {
+      reject(e)
+     })
+     .finally(() => {
+      context.commit('setForm', updated)
+     })
+   } catch (e) {
+    reject(e)
+   }
   })
  },
  continueToNextPage: (
@@ -61,7 +95,7 @@ const mutations = {
   state.currentFormSlug = formName
  },
  setForms(state: FormsState, forms: Form[]) {
-  state.forms = forms
+  state.forms = forms || []
  },
  setForm(state: FormsState, form: Form) {
   const matches = state.forms.filter(form => form.slug == state.currentFormSlug)

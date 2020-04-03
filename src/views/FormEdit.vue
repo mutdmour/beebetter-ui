@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import JSONEditor from '../components/JSONEditor.vue'
-import { Form } from '../index'
+import { FormJSON } from '../index'
 import { mapGetters } from 'vuex'
 import { Route } from 'vue-router'
 
@@ -46,9 +46,9 @@ export default Vue.extend({
   },
  },
  methods: {
-  updateForm(form: Form) {
+  updateForm(form: FormJSON) {
    this.$store
-    .dispatch('forms/updateForm', form)
+    .dispatch('forms/updateForm', { formId: this.form.id, form })
     .then(() => {
      this.$bvToast.toast('Form saved successfully', {
       variant: 'success',

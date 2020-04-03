@@ -400,8 +400,8 @@ export default class FormWrapper implements Form {
  constructor(data: FormJSON) {
   this.id = this.getId(data.id)
   this.slug = this.getSlug(data.slug)
-  this.name = this.getName(data.config.name)
-  this.pages = this.getPages(data.config.pages)
+  this.name = (data.config && data.config.name) || this.slug
+  this.pages = this.getPages(data.config && data.config.pages)
  }
 
  validatePage(pageIndex: number): void {
@@ -455,25 +455,12 @@ export default class FormWrapper implements Form {
   return slug
  }
 
- getName(name: string) {
-  if (!name) {
-   throw new Error('name is required field of form')
-  }
-  if (typeof name !== 'string') {
-   throw new Error('name must be of type string')
-  }
-  return name
- }
-
  getPages(pages: PageJSON[]) {
   if (!pages) {
-   throw new Error('form pages is required field of form')
+   return []
   }
-  if (!Array.isArray(pages)) {
+  if (pages && !Array.isArray(pages)) {
    throw new Error('form pages must be an array')
-  }
-  if (pages.length === 0) {
-   throw new Error('form pages must have length of more than 0')
   }
   return pages.map((page: PageJSON) => new PageWrapper(page))
  }
