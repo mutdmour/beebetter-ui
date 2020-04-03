@@ -1,7 +1,7 @@
 import { FormJSON } from '../index'
 
 const GET_ALL_FORMS_ENDPOINT = '/api/v1/forms'
-const UPDATE_FORM_ENDPOINT = '/api/v1/form/update?formId='
+const UPDATE_FORM_ENDPOINT = '/api/v1/forms/update?formId='
 
 export function getForms() {
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,6 +18,7 @@ export function updateForm(formId: number, form: FormJSON) {
  return new Promise((resolve, reject) => {
   fetch(url, {
    method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
    body: JSON.stringify(form),
   }).then(async response => {
    const body = await response.text()
