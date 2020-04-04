@@ -1,6 +1,34 @@
 <template>
  <div class="forms">
   <b-container fluid="lg">
+   <b-form-row v-if="createMode" class="mt-2" align-v="center">
+    <b-col class="d-none d-lg-block d-md-block"></b-col>
+    <b-col>
+     <b-form-group id="create-group-1">
+      <b-form-input
+       id="slug-input"
+       placeholder="URL slug"
+       v-model="slug"
+       type="text"
+      ></b-form-input>
+     </b-form-group>
+    </b-col>
+    <b-col>
+     <b-button variant="primary" @click="onCreated">Create</b-button>
+    </b-col>
+    <b-col class="d-none d-lg-block d-md-block"></b-col>
+   </b-form-row>
+   <b-form-row v-else class="mt-2" align-v="center">
+     <b-col></b-col>
+     <b-col>
+    <b-form-group id="create-new-group-1">
+      <b-button variant="outline-primary" @click="onCreate"
+       >Create new</b-button
+      >
+    </b-form-group>
+     </b-col>
+     <b-col></b-col>
+   </b-form-row>
    <b-form-row
     v-for="form in forms"
     v-bind:key="form.id"
@@ -29,15 +57,6 @@
       <b-dropdown-item disabled variant="danger">Delete</b-dropdown-item>
      </b-dropdown>
     </b-col>
-   </b-form-row>
-   <b-form-row v-if="createMode">
-    <b-form-group id="create-group-1" label="Url slug:" label-for="slug-input">
-     <b-form-input id="slug-input" v-model="slug" type="text"></b-form-input>
-    </b-form-group>
-    <b-button variant="primary" @click="onCreated">Create</b-button>
-   </b-form-row>
-   <b-form-row v-else>
-    <b-button variant="primary" @click="onCreate">Create new</b-button>
    </b-form-row>
   </b-container>
  </div>
