@@ -1,5 +1,5 @@
 <template>
- <b-container class="login">
+ <b-container class="login mt-2">
   <b-form @submit="onSubmit">
    <b-form-group
     id="email-group-1"

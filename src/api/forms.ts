@@ -2,6 +2,7 @@ import { FormJSON } from '../index'
 
 const GET_ALL_FORMS_ENDPOINT = '/api/v1/forms'
 const UPDATE_FORM_ENDPOINT = '/api/v1/forms/update?formId='
+const DELETE_FORM_ENDPOINT = '/api/v1/forms/delete?formId='
 const CREATE_FORM_ENDPOINT = '/api/v1/forms/create?slug='
 
 export function getForms() {
@@ -33,6 +34,19 @@ export function updateForm(formId: number, form: FormJSON) {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
    body: JSON.stringify(form),
+  }).then(async response => {
+   const body = await response.text()
+   response.ok ? resolve() : reject(body)
+  })
+ })
+}
+
+export function deleteForm(formId: number) {
+ const url = `${DELETE_FORM_ENDPOINT}${formId}`
+
+ return new Promise((resolve, reject) => {
+  fetch(url, {
+   method: 'POST',
   }).then(async response => {
    const body = await response.text()
    response.ok ? resolve() : reject(body)

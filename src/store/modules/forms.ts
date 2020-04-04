@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form, FormsState, FormJSON } from '../../index'
-import { getForms, updateForm, createForm } from '../../api/forms'
+import { getForms, updateForm, createForm, deleteForm } from '../../api/forms'
 import { ActionContext } from 'vuex'
 import FormWrapper from '@/api/FormWrapper'
 
@@ -95,10 +95,10 @@ const actions = {
  create: (context: ActionContext<any, unknown>, slug: string) => {
   return new Promise((resolve, reject) => {
    try {
-    slug = slug.trim()
     if (!slug) {
      return reject('slug must be defined')
     }
+    slug = slug.trim()
     if (slug.indexOf(' ') >= 0) {
      return reject('slug must not contian spaces')
     }
@@ -112,6 +112,25 @@ const actions = {
      })
    } catch (e) {
     reject('Error occured in creating new form')
+   }
+  })
+ },
+ delete: (context: ActionContext<any, unknown>, formId: number) => {
+  return new Promise((resolve, reject) => {
+   try {
+    if (!formId) {
+     return reject('formId must be given')
+    }
+    deleteForm(formId)
+     .then(() => {
+      context.commit('deleteForm', formId)
+      resolve()
+     })
+     .catch((e: string) => {
+      reject(e)
+     })
+   } catch (e) {
+    reject('Error occured in deleting form')
    }
   })
  },
@@ -129,6 +148,9 @@ const mutations = {
   if (matches.length > 0) {
    matches[0] = form
   }
+ },
+ deleteForm(state: FormsState, formId: number) {
+  state.forms = state.forms.filter(form => form.id !== formId)
  },
  addForm(state: FormsState, form: Form) {
   state.forms.push(form)

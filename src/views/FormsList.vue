@@ -19,15 +19,15 @@
     <b-col class="d-none d-lg-block d-md-block"></b-col>
    </b-form-row>
    <b-form-row v-else class="mt-2" align-v="center">
-     <b-col></b-col>
-     <b-col>
-    <b-form-group id="create-new-group-1">
+    <b-col></b-col>
+    <b-col>
+     <b-form-group id="create-new-group-1">
       <b-button variant="outline-primary" @click="onCreate"
        >Create new</b-button
       >
-    </b-form-group>
-     </b-col>
-     <b-col></b-col>
+     </b-form-group>
+    </b-col>
+    <b-col></b-col>
    </b-form-row>
    <b-form-row
     v-for="form in forms"
@@ -54,7 +54,9 @@
       >
       <b-dropdown-item disabled>Results</b-dropdown-item>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item disabled variant="danger">Delete</b-dropdown-item>
+      <b-dropdown-item variant="danger" @click="onDelete(form.id)"
+       >Delete</b-dropdown-item
+      >
      </b-dropdown>
     </b-col>
    </b-form-row>
@@ -96,6 +98,26 @@ export default Vue.extend({
       noCloseButton: true,
      })
      this.$router.push(`/forms/${this.slug}/edit`)
+    })
+    .catch(e => {
+     this.$bvToast.toast(e, {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
+  },
+  onDelete: function(formId: number) {
+   this.$store
+    .dispatch('forms/delete', formId)
+    .then(() => {
+     this.$bvToast.toast('Form deleted successfully', {
+      variant: 'success',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
     })
     .catch(e => {
      this.$bvToast.toast(e, {
