@@ -10,6 +10,7 @@ import {
  BeeminderConfig,
  RadioGroupOptionJSON,
  RadioGroupJSON,
+ Result,
  TextInputJSON,
  FormElementJSON,
  RandomCollectionJSON,
@@ -19,6 +20,7 @@ import {
  FormJSON,
 } from '../index'
 import { isAlphaNumericAndLowercase } from '../utils/helpers'
+import { notEmpty } from '../utils/helpers'
 
 class RadioGroupOptionWrapper implements RadioGroupOption {
  label: string
@@ -105,13 +107,16 @@ class RadioGroupWrapper implements RadioGroup {
   this.value = value
  }
 
- canSubmit(): boolean {
-  return Boolean(this.value)
+ getResult(): string {
+  if (this.value) {
+   throw new Error('Value for radio group must be given')
+  }
+  return this.value
  }
 }
 
 function isTextInput(type: any, x: any): x is TextInputJSON {
- return x && type === 'text'
+ return type === 'text'
 }
 
 class TextInputWrapper implements TextInput {
@@ -132,11 +137,14 @@ class TextInputWrapper implements TextInput {
   }
  }
 
- canSubmit(): boolean {
-  const res = this.expected
-   ? this.expected.trim().toLowerCase() === this.value.trim().toLowerCase()
-   : Boolean(this.value)
-  return res
+ getResult(): string {
+  if (
+   this.expected &&
+   this.expected.trim().toLowerCase() === this.value.trim().toLowerCase()
+  ) {
+   throw new Error(`Value is not as expected: ${this.expected}`)
+  }
+  return this.value
  }
 
  getLabel(label: string): string {
@@ -183,11 +191,26 @@ class FormElementWrapper implements FormElement {
  }
 
  get invalid(): boolean {
-  return this.enabled && this.required && this.validated && !this.canSubmit()
+  if (this.enabled && this.required && this.validated) {
+   try {
+    this.getResult()
+   } catch (e) {
+    return true
+   }
+  }
+  return false
  }
 
- canSubmit(): boolean {
-  return this.enabled && this.required ? this.content.canSubmit() : true
+ getResult(): Result | null {
+  if (this.enabled && this.required && this.beemind) {
+   return {
+    beemind: {
+     goalName: this.beemind.goalName,
+    },
+    value: this.content.getResult(),
+   }
+  }
+  return null
  }
 
  getType(type: string): string {
@@ -221,6 +244,12 @@ class FormElementWrapper implements FormElement {
  }
 
  getContent(type: string, content: unknown) {
+  if (!type) {
+   throw new Error('type must be given for element')
+  }
+  if (!content) {
+   throw new Error('content object must be given for element')
+  }
   if (isTextInput(type, content)) {
    return new TextInputWrapper(content)
   } else if (isRadioGroup(type, content)) {
@@ -280,8 +309,8 @@ class RandomCollectionWrapper implements RandomCollection {
   }
  }
 
- canSubmit(): boolean {
-  return this.elements[this.selected].canSubmit()
+ getResult(): Result | null {
+  return this.elements[this.selected].getResult()
  }
 
  getSelected() {
@@ -341,8 +370,8 @@ class PageWrapper implements Page {
   }
  }
 
- canSubmit() {
-  return this.elements.reduce((prev, el) => prev && el.canSubmit(), true)
+ getResults(): Result[] {
+  return this.elements.map(el => el.getResult()).filter(notEmpty)
  }
 
  getName(name: string) {
@@ -404,10 +433,6 @@ export default class FormWrapper implements Form {
   this.pages = this.getPages(data.config && data.config.pages)
  }
 
- validatePage(pageIndex: number): void {
-  this.pages[pageIndex].validate()
- }
-
  getJSON(): FormJSON {
   return {
    id: this.id,
@@ -419,15 +444,14 @@ export default class FormWrapper implements Form {
   }
  }
 
- canSubmit(): boolean {
-  return this.pages.reduce(
-   (prev: boolean, page) => prev && page.canSubmit(),
-   true
-  )
+ getResults(): Result[] {
+  return this.pages.flatMap(page => {
+   return page.getResults()
+  })
  }
 
- canSubmitPage(index: number): boolean {
-  return this.pages[index].canSubmit()
+ validatePage(index: number): void {
+  this.pages[index].getResults()
  }
 
  getId(id: number) {

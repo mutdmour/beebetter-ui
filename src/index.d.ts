@@ -19,7 +19,7 @@ declare namespace beebetter {
   value: string
   options: RadioGroupOption[]
 
-  canSubmit: () => boolean
+  getResult: () => string
   setValue: (value: string) => void
   getJSON: () => RadioGroupJSON
  }
@@ -32,7 +32,7 @@ declare namespace beebetter {
  interface TextInput extends TextInputJSON {
   value: string
 
-  canSubmit: () => boolean
+  getResult: () => string
   setValue: (value: string) => void
   getJSON: () => TextInputJSON
  }
@@ -49,12 +49,21 @@ declare namespace beebetter {
   type: RandomCollectionType
  }
 
+ interface BeeminderResult {
+  goalName: string
+ }
+
+ interface Result {
+  beemind: BeeminderResult
+  value: string
+ }
+
  interface RandomCollection extends RandomCollectionJSON {
   selected: number
   elements: FormElement[]
 
   setValue: (value: string) => void
-  canSubmit: () => boolean
+  getResult: () => Result | null
   getJSON: () => RandomCollectionJSON
   setValidated: (validated: boolean) => void
  }
@@ -72,7 +81,7 @@ declare namespace beebetter {
   invalid: boolean
 
   setValue: (value: string) => void
-  canSubmit: () => boolean
+  getResult: () => Result | null
   getJSON: () => FormElementJSON
   setValidated: (validated: boolean) => void
  }
@@ -90,7 +99,7 @@ declare namespace beebetter {
 
   getElement: (index: number) => FormElement | RandomCollection | null
   setValue: (elementIndex: number, value: string) => void
-  canSubmit: () => boolean
+  getResults: () => Result[]
   getJSON: () => PageJSON
   validate: () => void
  }
@@ -112,8 +121,7 @@ declare namespace beebetter {
 
   getPage: (index: number) => Page | null
   setValue: (pageIndex: number, elementIndex: number, value: string) => void
-  canSubmit: () => boolean
-  canSubmitPage: (pageIndex: number) => boolean
+  getResults: () => Result[]
   getJSON: () => FormJSON
   validatePage: (pageIndex: number) => void
  }

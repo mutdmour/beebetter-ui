@@ -2,6 +2,12 @@ export function isAlphaNumericAndLowercase(input: string): boolean {
  return /^[a-z0-9]+$/.test(input)
 }
 
+export function notEmpty<TValue>(
+ value: TValue | null | undefined
+): value is TValue {
+ return value !== null && value !== undefined
+}
+
 function getCookie(name: string): string | null {
  name = name.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1')
 

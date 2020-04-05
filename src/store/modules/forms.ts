@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form, FormsState, FormJSON } from '../../index'
-import { getForms, updateForm, createForm, deleteForm } from '../../api/forms'
+import {
+ getForms,
+ updateForm,
+ createForm,
+ deleteForm,
+ submitForm,
+} from '../../api/forms'
 import { ActionContext } from 'vuex'
 import FormWrapper from '@/api/FormWrapper'
+import { notEmpty } from '../../utils/helpers'
 
 const state = {
  currentFormSlug: null,
  forms: [],
-}
-
-const notEmpty = <TValue>(
- value: TValue | null | undefined
-): value is TValue => {
- return value !== null && value !== undefined
 }
 
 const wrapForm = (form: FormJSON): Form => {
@@ -77,19 +78,24 @@ const actions = {
   return new Promise((resolve, reject) => {
    const currentForm = getters.currentForm(context.state)
    context.commit('validatePage', pageIndex)
-   if (currentForm?.canSubmitPage(pageIndex)) {
-    return resolve()
+   try {
+    currentForm?.validatePage(pageIndex)
+   } catch (e) {
+    return reject(e)
    }
-   reject()
+   resolve()
   })
  },
  submit: (context: ActionContext<any, unknown>) => {
   return new Promise((resolve, reject) => {
-   const currentForm = getters.currentForm(context.state)
-   if (currentForm?.canSubmit()) {
-    return resolve()
+   try {
+    const currentForm = getters.currentForm(context.state)
+    if (currentForm) {
+     submitForm(currentForm.id, { results: currentForm.getResults() })
+    }
+   } catch (e) {
+    reject(e)
    }
-   reject()
   })
  },
  create: (context: ActionContext<any, unknown>, slug: string) => {
