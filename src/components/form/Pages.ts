@@ -57,6 +57,7 @@ export default Vue.extend({
       appendToast: true,
       noCloseButton: true,
      })
+     this.$router.push('/forms')
     })
     .catch(e => {
      this.$bvToast.toast(`${e}`, {

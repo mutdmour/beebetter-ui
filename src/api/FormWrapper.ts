@@ -176,8 +176,8 @@ class FormElementWrapper implements FormElement {
   this.validated = false
  }
 
- setValidated(validated: boolean): void {
-  this.validated = validated
+ setValidated(): void {
+  this.validated = true
  }
 
  getJSON(): FormElementJSON {
@@ -205,11 +205,10 @@ class FormElementWrapper implements FormElement {
   if (!this.enabled) {
    return null
   }
-  this.validated = true
   try {
    const value = this.content.getResult()
    if (this.required && !value) {
-    throw new Error('Missing required')
+    throw new Error('Missing required field')
    }
    if (this.beemind && this.beemind.enabled) {
     return {
@@ -312,8 +311,8 @@ class RandomCollectionWrapper implements RandomCollection {
   this.type = 'random'
  }
 
- setValidated(validated: boolean): void {
-  this.elements.forEach(element => element.setValidated(validated))
+ setValidated(): void {
+  this.elements[this.selected].setValidated()
  }
 
  getJSON(): RandomCollectionJSON {
@@ -373,8 +372,8 @@ class PageWrapper implements Page {
   this.elements = this.getElements(data.elements)
  }
 
- validate(): void {
-  this.elements.forEach(element => element.setValidated(true))
+ setValidated(): void {
+  this.elements.forEach(element => element.setValidated())
  }
 
  getJSON(): PageJSON {
@@ -462,6 +461,10 @@ export default class FormWrapper implements Form {
   return this.pages.flatMap(page => {
    return page.getResults()
   })
+ }
+
+ setPageValidated(pageIndex: number): void {
+  this.pages[pageIndex].setValidated()
  }
 
  validatePage(index: number): void {

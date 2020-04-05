@@ -65,7 +65,7 @@ declare namespace beebetter {
   setValue: (value: string) => void
   getResult: () => Result | null
   getJSON: () => RandomCollectionJSON
-  setValidated: (validated: boolean) => void
+  setValidated: () => void
  }
 
  interface FormElementJSON {
@@ -83,7 +83,7 @@ declare namespace beebetter {
   setValue: (value: string) => void
   getResult: () => Result | null
   getJSON: () => FormElementJSON
-  setValidated: (validated: boolean) => void
+  setValidated: () => void
  }
 
  type ElementJSONType = FormElementJSON | RandomCollectionJSON
@@ -101,7 +101,7 @@ declare namespace beebetter {
   setValue: (elementIndex: number, value: string) => void
   getResults: () => Result[]
   getJSON: () => PageJSON
-  validate: () => void
+  setValidated: () => void
  }
 
  interface FormJSON {
@@ -123,6 +123,7 @@ declare namespace beebetter {
   setValue: (pageIndex: number, elementIndex: number, value: string) => void
   getResults: () => Result[]
   getJSON: () => FormJSON
+  setPageValidated: (pageIndex: number) => void
   validatePage: (pageIndex: number) => void
  }
 
