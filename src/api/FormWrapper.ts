@@ -108,7 +108,7 @@ class RadioGroupWrapper implements RadioGroup {
  }
 
  getResult(): string {
-  if (this.value) {
+  if (!this.value) {
    throw new Error('Value for radio group must be given')
   }
   return this.value
@@ -140,7 +140,7 @@ class TextInputWrapper implements TextInput {
  getResult(): string {
   if (
    this.expected &&
-   this.expected.trim().toLowerCase() === this.value.trim().toLowerCase()
+   this.expected.trim().toLowerCase() !== this.value.trim().toLowerCase()
   ) {
    throw new Error(`Value is not as expected: ${this.expected}`)
   }
@@ -202,12 +202,26 @@ class FormElementWrapper implements FormElement {
  }
 
  getResult(): Result | null {
-  if (this.enabled && this.required && this.beemind) {
-   return {
-    beemind: {
-     goalName: this.beemind.goalName,
-    },
-    value: this.content.getResult(),
+  if (!this.enabled) {
+   return null
+  }
+  this.validated = true
+  try {
+   const value = this.content.getResult()
+   if (this.required && !value) {
+    throw new Error('Missing required')
+   }
+   if (this.beemind && this.beemind.enabled) {
+    return {
+     beemind: {
+      goalName: this.beemind.goalName,
+     },
+     value,
+    }
+   }
+  } catch (e) {
+   if (this.required) {
+    throw e
    }
   }
   return null

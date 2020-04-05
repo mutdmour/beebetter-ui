@@ -77,7 +77,6 @@ const actions = {
  ) => {
   return new Promise((resolve, reject) => {
    const currentForm = getters.currentForm(context.state)
-   context.commit('validatePage', pageIndex)
    try {
     currentForm?.validatePage(pageIndex)
    } catch (e) {
@@ -91,7 +90,12 @@ const actions = {
    try {
     const currentForm = getters.currentForm(context.state)
     if (currentForm) {
-     submitForm(currentForm.id, { results: currentForm.getResults() })
+     const results = currentForm.getResults()
+     if (results.length > 0) {
+      submitForm(currentForm.id, { results })
+     } else {
+      throw new Error('Nothing to submit')
+     }
     }
    } catch (e) {
     reject(e)
@@ -160,12 +164,6 @@ const mutations = {
  },
  addForm(state: FormsState, form: Form) {
   state.forms.push(form)
- },
- validatePage(state: FormsState, pageIndex: number) {
-  const form = getters.currentForm(state)
-  if (form) {
-   form.validatePage(pageIndex)
-  }
  },
  updateElement(
   state: FormsState,

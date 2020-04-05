@@ -58,7 +58,7 @@ export default Vue.extend({
      })
     })
     .catch((e: string) => {
-     this.$bvToast.toast(`Error: ${e}`, {
+     this.$bvToast.toast(`${e}`, {
       variant: 'danger',
       solid: false,
       appendToast: true,

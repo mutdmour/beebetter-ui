@@ -32,8 +32,14 @@ export default Vue.extend({
     .then(() => {
      this.$data.currentPageIndex++
     })
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    .catch(() => {})
+    .catch(e => {
+     this.$bvToast.toast(`${e}`, {
+      variant: 'danger',
+      solid: false,
+      appendToast: true,
+      noCloseButton: true,
+     })
+    })
   },
   onPrevious(): void {
    this.$data.currentPageIndex--
@@ -52,8 +58,8 @@ export default Vue.extend({
       noCloseButton: true,
      })
     })
-    .catch(() => {
-     this.$bvToast.toast('Error: there was an issue with form submission', {
+    .catch(e => {
+     this.$bvToast.toast(`${e}`, {
       variant: 'danger',
       solid: false,
       appendToast: true,
