@@ -115,6 +115,7 @@ class RadioGroupWrapper implements RadioGroup {
  }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isTextInput(type: any, x: any): x is TextInputJSON {
  return type === 'text'
 }

@@ -55,6 +55,7 @@ export function deleteForm(formId: number) {
  })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function submitForm(formId: number, results: any) {
  const url = `${SUBMIT_FORM_ENDPOINT}${formId}`
 

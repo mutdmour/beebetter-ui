@@ -165,7 +165,7 @@ const mutations = {
  setPageValidated(state: FormsState, pageIndex: number) {
   const form = getters.currentForm(state)
   if (form) {
-    form.setPageValidated(pageIndex)
+   form.setPageValidated(pageIndex)
   }
  },
  deleteForm(state: FormsState, formId: number) {
