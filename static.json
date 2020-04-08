@@ -4,11 +4,9 @@
   "routes": {
     "/**": "index.html"
   },
-  {
-   "proxies": {
+  "proxies": {
     "/api/": {
       "origin": "https://${API_APP_NAME}.herokuapp.com/"
     }
-   }
   }
 }
