@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
  name: 'RadioGroup',
- props: ['label', 'options', 'value', 'required'],
+ props: ['label', 'options', 'value', 'required', 'id'],
  data() {
   return {
    selectedValue: null,

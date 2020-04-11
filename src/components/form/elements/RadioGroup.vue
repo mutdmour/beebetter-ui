@@ -11,7 +11,7 @@
      v-for="(opt, index) in options"
      v-bind:key="index"
      v-on:input="updateValue"
-     name="radios"
+     :name="'radios-' + id"
      v-model="selected"
      :value="opt.value"
      :required="required"

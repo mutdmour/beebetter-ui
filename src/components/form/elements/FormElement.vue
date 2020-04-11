@@ -6,12 +6,14 @@
    :value="element.content.value"
    :expected="element.content.expected"
    :required="element.required"
+   :id="element.id"
    v-on:input="updateValue"
   />
   <radio-group
    v-else-if="element.type === 'radio'"
    :label="element.content.label"
    :options="element.content.options"
+   :id="element.id"
    :value="element.content.value"
    :required="element.required"
    v-on:input="updateValue"
