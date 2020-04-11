@@ -62,10 +62,7 @@ const actions = {
         }
         const json = current.getJSON();
         json.config = data.config;
-        console.log(data.formId);
-        console.log(json);
         const updated = new FormWrapper(json);
-        console.log("hmm");
         updateForm(data.formId, updated.getJSON())
           .then(() => {
             resolve();

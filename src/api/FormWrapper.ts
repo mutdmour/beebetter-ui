@@ -462,7 +462,6 @@ export default class FormWrapper implements Form {
   runnable: boolean;
 
   constructor(data: FormJSON, catchError = false) {
-    console.log("yo", data);
     this.rawConfig = data.config || {};
     this.id = this.getId(data.id);
     this.slug = this.getSlug(data.slug);
