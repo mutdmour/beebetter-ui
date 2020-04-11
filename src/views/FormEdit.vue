@@ -9,7 +9,7 @@
    <b-tabs content-class="mt-3 h-100" class="w-100 h-100">
     <b-tab title="Designer" disabled></b-tab>
     <b-tab title="JSON Editor" class="w-100 h-75" active>
-     <json-editor :input="form.getJSON()" @submit="updateForm" />
+     <json-editor :input="form.getRawConfig()" @submit="updateForm" />
     </b-tab>
    </b-tabs>
   </b-row>
@@ -46,9 +46,9 @@ export default Vue.extend({
   },
  },
  methods: {
-  updateForm(form: FormJSON) {
+  updateForm(config: any) {
    this.$store
-    .dispatch('forms/update', { formId: this.form.id, form })
+    .dispatch('forms/update', { formId: this.form.id, config })
     .then(() => {
      this.$bvToast.toast('Form saved successfully', {
       variant: 'success',

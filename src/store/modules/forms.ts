@@ -17,7 +17,7 @@ const state = {
 }
 
 const wrapForm = (form: FormJSON): Form => {
- return new FormWrapper(form)
+ return new FormWrapper(form, true)
 }
 
 const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
@@ -28,9 +28,8 @@ const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
    .map(form => {
     try {
      return wrapForm(form)
-    } catch (e) {
-     // console.log(e)
-    }
+    // eslint-disable-next-line no-empty
+    } catch (e) {}
    })
    .filter(notEmpty)
  )
@@ -51,11 +50,20 @@ const actions = {
  },
  update: (
   context: ActionContext<any, unknown>,
-  data: { formId: number; form: FormJSON }
+  data: { formId: number; config: any}
  ) => {
   return new Promise((resolve, reject) => {
    try {
-    const updated = new FormWrapper(data.form)
+    const current = getters.currentForm(context.state);
+    if (!current) {
+      throw new Error('No current form');
+    }
+    const json = current.getJSON();
+    json.config = data.config;
+    console.log(data.formId)
+    console.log(json)
+    const updated = new FormWrapper(json)
+    console.log('hmm')
     updateForm(data.formId, updated.getJSON())
      .then(() => {
       resolve()
@@ -177,9 +185,9 @@ const mutations = {
  updateElement(
   state: FormsState,
   payload: {
-   pageIndex: number
-   elementIndex: number
-   value: string
+   pageIndex: number;
+   elementIndex: number;
+   value: string;
   }
  ) {
   const form = getters.currentForm(state)

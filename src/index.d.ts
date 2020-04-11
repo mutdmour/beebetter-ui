@@ -1,135 +1,139 @@
 declare namespace beebetter {
  interface RadioGroupOptionJSON {
-  label: string
-  value: string
+  label: string;
+  value: string;
  }
 
  interface RadioGroupOption extends RadioGroupOptionJSON {
-  getJSON: () => RadioGroupOptionJSON
+  getJSON: () => RadioGroupOptionJSON;
  }
 
  type RadioGroupType = 'radio'
 
  interface RadioGroupJSON {
-  label: string
-  options: RadioGroupOptionJSON[]
+  label: string;
+  options: RadioGroupOptionJSON[];
  }
 
  interface RadioGroup extends RadioGroupJSON {
-  value: string
-  options: RadioGroupOption[]
+  value: string;
+  options: RadioGroupOption[];
 
-  getResult: () => string
-  setValue: (value: string) => void
-  getJSON: () => RadioGroupJSON
+  getResult: () => string;
+  setValue: (value: string) => void;
+  getJSON: () => RadioGroupJSON;
  }
 
  interface TextInputJSON {
-  label: string
-  expected: string | null
+  label: string;
+  expected: string | null;
  }
 
  interface TextInput extends TextInputJSON {
-  value: string
+  value: string;
 
-  getResult: () => string
-  setValue: (value: string) => void
-  getJSON: () => TextInputJSON
+  getResult: () => string;
+  setValue: (value: string) => void;
+  getJSON: () => TextInputJSON;
  }
 
  interface BeeminderConfig {
-  enabled: boolean
-  goalName: string
+  enabled: boolean;
+  goalName: string;
  }
 
  type RandomCollectionType = 'random'
 
  interface RandomCollectionJSON {
-  elements: FormElementJSON[]
-  type: RandomCollectionType
+  elements: FormElementJSON[];
+  type: RandomCollectionType;
  }
 
  interface BeeminderResult {
-  goalName: string
+  goalName: string;
  }
 
  interface Result {
-  beemind: BeeminderResult
-  value: string
+  beemind: BeeminderResult;
+  value: string;
  }
 
  interface RandomCollection extends RandomCollectionJSON {
-  selected: number
-  elements: FormElement[]
+  selected: number;
+  elements: FormElement[];
 
-  setValue: (value: string) => void
-  getResult: () => Result | null
-  getJSON: () => RandomCollectionJSON
-  setValidated: () => void
+  setValue: (value: string) => void;
+  getResult: () => Result | null;
+  getJSON: () => RandomCollectionJSON;
+  setValidated: () => void;
  }
 
  interface FormElementJSON {
-  type: string
-  enabled: boolean
-  required: boolean
-  beemind: BeeminderConfig | null
-  content: TextInputJSON | RadioGroupJSON
+  id: string;
+  type: string;
+  enabled: boolean;
+  required: boolean;
+  beemind: BeeminderConfig | null;
+  content: TextInputJSON | RadioGroupJSON;
  }
 
  interface FormElement extends FormElementJSON {
-  content: TextInput | RadioGroup
-  invalid: boolean
+  content: TextInput | RadioGroup;
+  invalid: boolean;
 
-  setValue: (value: string) => void
-  getResult: () => Result | null
-  getJSON: () => FormElementJSON
-  setValidated: () => void
+  setValue: (value: string) => void;
+  getResult: () => Result | null;
+  getJSON: () => FormElementJSON;
+  setValidated: () => void;
  }
 
  type ElementJSONType = FormElementJSON | RandomCollectionJSON
  interface PageJSON {
-  name: string
-  elements: ElementJSONType[]
+  name: string;
+  elements: ElementJSONType[];
  }
 
  type ElementType = FormElement | RandomCollection
 
  interface Page extends PageJSON {
-  elements: ElementType[]
+  elements: ElementType[];
 
-  getElement: (index: number) => FormElement | RandomCollection | null
-  setValue: (elementIndex: number, value: string) => void
-  getResults: () => Result[]
-  getJSON: () => PageJSON
-  setValidated: () => void
+  getElement: (index: number) => FormElement | RandomCollection | null;
+  setValue: (elementIndex: number, value: string) => void;
+  getResults: () => Result[];
+  getJSON: () => PageJSON;
+  setValidated: () => void;
  }
 
  interface FormJSON {
-  id: number
-  slug: string
+  id: number;
+  slug: string;
   config: {
-   name: string
-   pages: PageJSON[]
-  }
+   name: string;
+   pages: PageJSON[];
+  };
  }
 
  interface Form {
-  id: number
-  slug: string
-  name: string
-  pages: Page[]
+  id: number;
+  slug: string;
+  name: string;
+  pages: Page[];
+  rawConfig: any;
+  runnable: boolean;
 
-  getPage: (index: number) => Page | null
-  setValue: (pageIndex: number, elementIndex: number, value: string) => void
-  getResults: () => Result[]
-  getJSON: () => FormJSON
-  setPageValidated: (pageIndex: number) => void
-  validatePage: (pageIndex: number) => void
+  getPage: (index: number) => Page | null;
+  setValue: (pageIndex: number, elementIndex: number, value: string) => void;
+  getResults: () => Result[];
+  getJSON: () => FormJSON;
+  getRawConfig: () => any;
+  setPageValidated: (pageIndex: number) => void;
+  validatePage: (pageIndex: number) => void;
  }
 
  interface FormsState {
-  forms: Form[]
-  currentFormSlug: string
+  forms: Form[];
+  currentFormSlug: string;
  }
 }
 

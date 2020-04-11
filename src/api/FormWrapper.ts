@@ -161,6 +161,7 @@ class TextInputWrapper implements TextInput {
 }
 
 class FormElementWrapper implements FormElement {
+ id: string
  type: string
  content: TextInput | RadioGroup
  beemind: BeeminderConfig | null
@@ -169,6 +170,7 @@ class FormElementWrapper implements FormElement {
  validated: boolean
 
  constructor(data: FormElementJSON) {
+  this.id = this.getId(data.id)
   this.type = this.getType(data.type)
   this.beemind = this.getBeeminderConfig(data.beemind)
   this.content = this.getContent(data.type, data.content)
@@ -183,6 +185,7 @@ class FormElementWrapper implements FormElement {
 
  getJSON(): FormElementJSON {
   return {
+   id: this.id,
    type: this.type,
    content: this.content.getJSON(),
    enabled: this.enabled,
@@ -225,6 +228,22 @@ class FormElementWrapper implements FormElement {
    }
   }
   return null
+ }
+
+ getId(id: string): string {
+   if (!id) {
+     throw new Error('Id is a required field of an element')
+   }
+
+   if (typeof id !== 'string') {
+     throw new Error('Id must be a string')
+   }
+
+   if (id.indexOf(' ') > -1) {
+     throw new Error('Element id must not contain any spaces')
+   }
+
+   return id
  }
 
  getType(type: string): string {
@@ -439,13 +458,31 @@ export default class FormWrapper implements Form {
  name: string
  pages: Page[]
  id: number
+ rawConfig: any
+ runnable: boolean
 
- constructor(data: FormJSON) {
-  this.id = this.getId(data.id)
-  this.slug = this.getSlug(data.slug)
-  this.name = (data.config && data.config.name) || this.slug
-  this.pages = this.getPages(data.config && data.config.pages)
+ constructor(data: FormJSON, catchError = false) {
+   console.log('yo', data)
+    this.rawConfig = data.config || {};
+    this.id = this.getId(data.id)
+    this.slug = this.getSlug(data.slug)
+    this.name = this.rawConfig.name || this.slug
+    this.runnable = true;
+  try {
+    this.pages = this.getPages(this.rawConfig.pages || [])
+    this.rawConfig = this.getJSON();
+  } catch (e) {
+    this.runnable = false;
+    this.pages = []
+    if (!catchError) {
+      throw e;
+    }
+  }
  }
+ 
+  getRawConfig(): any {
+    return this.rawConfig;
+  }
 
  getJSON(): FormJSON {
   return {
