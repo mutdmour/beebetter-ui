@@ -547,7 +547,10 @@ export default class FormWrapper implements Form {
   }
 
   getPages(pages: PageJSON[], elementMap: Map<string, FormElement>) {
-    if (!pages || !Array.isArray(pages)) {
+    if (!pages) {
+      return [];
+    }
+    if (pages && !Array.isArray(pages)) {
       throw new Error("form pages must be an array");
     }
     return pages.map((page: PageJSON) => new PageWrapper(page, elementMap));
