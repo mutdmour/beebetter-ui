@@ -119,16 +119,11 @@ declare namespace beebetter {
     slug: string;
     name: string;
     pages: Page[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rawConfig: any;
-    runnable: boolean;
 
     getPage: (index: number) => Page | null;
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;
     getResults: () => Result[];
     getJSON: () => FormJSON;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getRawConfig: () => any;
     setPageValidated: (pageIndex: number) => void;
     validatePage: (pageIndex: number) => void;
   }

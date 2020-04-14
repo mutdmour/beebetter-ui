@@ -458,29 +458,15 @@ export default class FormWrapper implements Form {
   name: string;
   pages: Page[];
   id: number;
-  rawConfig: any;
-  runnable: boolean;
 
-  constructor(data: FormJSON, catchError = false) {
-    this.rawConfig = data.config || {};
+  constructor(data: FormJSON) {
+    if (!data) {
+      throw new Error("data must be given to create form");
+    }
     this.id = this.getId(data.id);
     this.slug = this.getSlug(data.slug);
-    this.name = this.rawConfig.name || this.slug;
-    this.runnable = true;
-    try {
-      this.pages = this.getPages(this.rawConfig.pages || []);
-      this.rawConfig = this.getJSON();
-    } catch (e) {
-      this.runnable = false;
-      this.pages = [];
-      if (!catchError) {
-        throw e;
-      }
-    }
-  }
-
-  getRawConfig(): any {
-    return this.rawConfig;
+    this.name = data.config.name || this.slug;
+    this.pages = this.getPages(data.config.pages || []);
   }
 
   getJSON(): FormJSON {

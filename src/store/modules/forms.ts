@@ -17,7 +17,7 @@ const state = {
 };
 
 const wrapForm = (form: FormJSON): Form => {
-  return new FormWrapper(form, true);
+  return new FormWrapper(form);
 };
 
 const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
