@@ -5,6 +5,7 @@
       :label="element.content.label"
       :value="element.content.value"
       :expected="element.content.expected"
+      :repeat="element.content.repeat"
       :required="element.required"
       :id="element.id"
       v-on:input="updateValue"

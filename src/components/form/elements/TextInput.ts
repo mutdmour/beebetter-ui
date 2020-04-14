@@ -2,7 +2,7 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "TextInput",
-  props: ["label", "value", "required", "expected", "id"],
+  props: ["label", "value", "required", "expected", "id", "repeat"],
   data() {
     return {
       input: "",
@@ -19,15 +19,18 @@ export default Vue.extend({
       }
     },
     asExpected() {
+      const expected = this.$props.repeat
+        ? this.$props.label
+        : this.$props.expected;
       if (
-        this.$props.expected === null ||
+        expected === null ||
         this.$data.input.length === 0 ||
         this.$data.typing
       ) {
         return null;
       }
       return (
-        this.$props.expected.trim().toLocaleLowerCase() ===
+        expected.trim().toLocaleLowerCase() ===
         this.$data.input.trim().toLocaleLowerCase()
       );
     }

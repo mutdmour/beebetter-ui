@@ -25,6 +25,7 @@ declare namespace beebetter {
   }
 
   interface TextInputJSON {
+    repeat: boolean;
     label: string;
     expected: string | null;
   }

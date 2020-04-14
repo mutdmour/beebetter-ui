@@ -124,26 +124,30 @@ class TextInputWrapper implements TextInput {
   label: string;
   value: string;
   expected: string | null;
+  repeat: boolean;
 
   constructor(data: TextInputJSON) {
     this.label = this.getLabel(data.label);
     this.expected = data.expected || null;
     this.value = "";
+    this.repeat = Boolean(data.repeat);
   }
 
   getJSON(): TextInputJSON {
     return {
       label: this.label,
-      expected: this.expected
+      expected: this.expected,
+      repeat: this.repeat
     };
   }
 
   getResult(): string {
+    const expected = this.repeat ? this.label : this.expected;
     if (
-      this.expected &&
-      this.expected.trim().toLowerCase() !== this.value.trim().toLowerCase()
+      expected &&
+      expected.trim().toLowerCase() !== this.value.trim().toLowerCase()
     ) {
-      throw new Error(`Value is not as expected: ${this.expected}`);
+      throw new Error(`Value is not as expected: ${expected}`);
     }
     return this.value;
   }
