@@ -9,7 +9,7 @@
       <b-tabs content-class="mt-3 h-100" class="w-100 h-100">
         <b-tab title="Designer" disabled></b-tab>
         <b-tab title="JSON Editor" class="w-100 h-75" active>
-          <json-editor :input="form.getJSON()" @submit="updateForm" />
+          <json-editor :input="form.getConfig()" @submit="updateForm" />
         </b-tab>
       </b-tabs>
     </b-row>

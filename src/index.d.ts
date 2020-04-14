@@ -124,6 +124,7 @@ declare namespace beebetter {
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;
     getResults: () => Result[];
     getJSON: () => FormJSON;
+    getConfig: () => { pages: PageJSON[]; name: string };
     setPageValidated: (pageIndex: number) => void;
     validatePage: (pageIndex: number) => void;
   }

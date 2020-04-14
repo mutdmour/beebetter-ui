@@ -327,7 +327,7 @@ class RandomCollectionWrapper implements RandomCollection {
       throw new Error("Element must have type: random");
     }
     this.elements = this.getElements(data.elements);
-    this.selected = this.getSelected();
+    this.selected = this.elements.length > 0 ? this.getSelected() : -1;
     this.type = "random";
   }
 
@@ -343,7 +343,7 @@ class RandomCollectionWrapper implements RandomCollection {
   }
 
   getResult(): Result | null {
-    return this.elements[this.selected].getResult();
+    return this.selected > -1 ? this.elements[this.selected].getResult() : null;
   }
 
   getSelected() {
@@ -361,9 +361,6 @@ class RandomCollectionWrapper implements RandomCollection {
     if (!Array.isArray(elements)) {
       throw new Error("page elements must be an array");
     }
-    if (elements.length === 0) {
-      throw new Error("page elements must have length of more than 0");
-    }
     return elements.map(
       (element: FormElementJSON) => new FormElementWrapper(element)
     );
@@ -376,7 +373,7 @@ class RandomCollectionWrapper implements RandomCollection {
   }
 
   setValue(value: string) {
-    const element = this.getElement(this.selected);
+    const element = this.selected > -1 ? this.getElement(this.selected) : null;
     if (element) {
       element.setValue(value);
     }
@@ -424,9 +421,6 @@ class PageWrapper implements Page {
     if (!Array.isArray(elements)) {
       throw new Error("page elements must be an array");
     }
-    if (elements.length === 0) {
-      throw new Error("page elements must have length of more than 0");
-    }
     return elements.map((element: ElementJSONType) =>
       this.getFormElement(element)
     );
@@ -466,17 +460,21 @@ export default class FormWrapper implements Form {
     this.id = this.getId(data.id);
     this.slug = this.getSlug(data.slug);
     this.name = data.config.name || this.slug;
-    this.pages = this.getPages(data.config.pages || []);
+    this.pages = this.getPages(data.config.pages);
   }
 
   getJSON(): FormJSON {
     return {
       id: this.id,
       slug: this.slug,
-      config: {
-        pages: this.pages.map(page => page.getJSON()),
-        name: this.name
-      }
+      config: this.getConfig()
+    };
+  }
+
+  getConfig(): { pages: PageJSON[]; name: string } {
+    return {
+      pages: this.pages.map(page => page.getJSON()),
+      name: this.name
     };
   }
 
@@ -520,10 +518,7 @@ export default class FormWrapper implements Form {
   }
 
   getPages(pages: PageJSON[]) {
-    if (!pages) {
-      return [];
-    }
-    if (pages && !Array.isArray(pages)) {
+    if (!pages || !Array.isArray(pages)) {
       throw new Error("form pages must be an array");
     }
     return pages.map((page: PageJSON) => new PageWrapper(page));

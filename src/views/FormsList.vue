@@ -41,12 +41,6 @@
           </span>
         </b-col>
         <b-col>
-          <!-- <b-button
-            v-if="!Boolean(form.runnable)"
-            variant="primary"
-            :href="'/#/forms/' + form.slug + '/edit'"
-            >Edit</b-button
-          > -->
           <b-dropdown
             right
             split
