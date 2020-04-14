@@ -319,14 +319,17 @@ class RandomCollectionWrapper implements RandomCollection {
   elements: FormElement[];
   selected: number;
 
-  constructor(data: RandomCollectionJSON) {
+  constructor(
+    data: RandomCollectionJSON,
+    elementMap: Map<string, FormElement>
+  ) {
     if (!data) {
       throw new Error("Element must have necessarily details");
     }
     if (data.type !== "random") {
       throw new Error("Element must have type: random");
     }
-    this.elements = this.getElements(data.elements);
+    this.elements = this.getElements(data.elements, elementMap);
     this.selected = this.elements.length > 0 ? this.getSelected() : -1;
     this.type = "random";
   }
@@ -354,16 +357,28 @@ class RandomCollectionWrapper implements RandomCollection {
     return enabled[selected].i;
   }
 
-  getElements(elements: FormElementJSON[]) {
+  getElements(
+    elements: FormElementJSON[],
+    elementMap: Map<string, FormElement>
+  ) {
     if (!elements) {
       throw new Error("elements is required field of form");
     }
     if (!Array.isArray(elements)) {
       throw new Error("page elements must be an array");
     }
-    return elements.map(
+    const res = elements.map(
       (element: FormElementJSON) => new FormElementWrapper(element)
     );
+
+    res.forEach((element: FormElement) => {
+      if (elementMap.has(element.id)) {
+        throw new Error("Element id must be unique in form");
+      }
+      elementMap.set(element.id, element);
+    });
+
+    return res;
   }
 
   getElement(index: number) {
@@ -384,9 +399,9 @@ class PageWrapper implements Page {
   name: string;
   elements: ElementType[];
 
-  constructor(data: PageJSON) {
+  constructor(data: PageJSON, elementMap: Map<string, FormElement>) {
     this.name = this.getName(data.name);
-    this.elements = this.getElements(data.elements);
+    this.elements = this.getElements(data.elements, elementMap);
   }
 
   setValidated(): void {
@@ -414,7 +429,10 @@ class PageWrapper implements Page {
     return name;
   }
 
-  getElements(elements: ElementJSONType[]) {
+  getElements(
+    elements: ElementJSONType[],
+    elementMap: Map<string, FormElement>
+  ) {
     if (!elements) {
       throw new Error("elements is required field of form");
     }
@@ -422,15 +440,20 @@ class PageWrapper implements Page {
       throw new Error("page elements must be an array");
     }
     return elements.map((element: ElementJSONType) =>
-      this.getFormElement(element)
+      this.getFormElement(element, elementMap)
     );
   }
 
-  getFormElement(element: any) {
+  getFormElement(element: any, elementMap: Map<string, FormElement>) {
     if (isRandomCollection(element)) {
-      return new RandomCollectionWrapper(element);
+      return new RandomCollectionWrapper(element, elementMap);
     }
-    return new FormElementWrapper(element);
+    const elem = new FormElementWrapper(element);
+    if (elementMap.has(elem.id)) {
+      throw new Error("Element id must be unique in form");
+    }
+    elementMap.set(elem.id, elem);
+    return elem;
   }
 
   getElement(index: number) {
@@ -452,6 +475,7 @@ export default class FormWrapper implements Form {
   name: string;
   pages: Page[];
   id: number;
+  elementMap: Map<string, FormElement>;
 
   constructor(data: FormJSON) {
     if (!data) {
@@ -460,7 +484,8 @@ export default class FormWrapper implements Form {
     this.id = this.getId(data.id);
     this.slug = this.getSlug(data.slug);
     this.name = data.config.name || this.slug;
-    this.pages = this.getPages(data.config.pages);
+    this.elementMap = new Map();
+    this.pages = this.getPages(data.config.pages, this.elementMap);
   }
 
   getJSON(): FormJSON {
@@ -517,11 +542,11 @@ export default class FormWrapper implements Form {
     return slug;
   }
 
-  getPages(pages: PageJSON[]) {
+  getPages(pages: PageJSON[], elementMap: Map<string, FormElement>) {
     if (!pages || !Array.isArray(pages)) {
       throw new Error("form pages must be an array");
     }
-    return pages.map((page: PageJSON) => new PageWrapper(page));
+    return pages.map((page: PageJSON) => new PageWrapper(page, elementMap));
   }
 
   getPage(index: number) {
