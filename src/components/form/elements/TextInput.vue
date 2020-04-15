@@ -2,7 +2,7 @@
   <b-row>
     <b-form-group>
       <b-col>
-        <label>{{ repeat ? "repeat: " : ""}}{{ label }}</label>
+        <label>{{ repeat ? "repeat: " : "" }}{{ label }}</label>
         <b-icon v-show="required" icon="dot" variant="danger"></b-icon>
       </b-col>
       <b-col>
