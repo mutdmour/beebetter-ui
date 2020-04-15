@@ -19,6 +19,16 @@
       :required="element.required"
       v-on:input="updateValue"
     />
+    <checkbox
+      v-else-if="element.type === 'checkbox'"
+      :label="element.content.label"
+      :id="element.id"
+      :value="element.content.value"
+      :unCheckedValue="element.content.unCheckedValue"
+      :checkedValue="element.content.checkedValue"
+      :required="element.required"
+      v-on:input="updateValue"
+    />
   </b-row>
 </template>
 

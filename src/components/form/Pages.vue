@@ -18,10 +18,10 @@
         Previous
       </b-button>
 
-      <b-button v-if="isFinal" variant="success" @click="onSubmit">
+      <b-button v-if="isFinal && canSubmit" variant="success" @click="onSubmit">
         Submit
       </b-button>
-      <b-button v-else variant="outline-primary" @click="onNext">
+      <b-button v-else-if="!isFinal" variant="outline-primary" @click="onNext">
         Next
       </b-button>
     </b-row>

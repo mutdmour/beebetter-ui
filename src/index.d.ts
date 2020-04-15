@@ -69,17 +69,31 @@ declare namespace beebetter {
     setValidated: () => void;
   }
 
+  interface CheckboxJSON {
+    label: string;
+    checkedValue: string;
+    unCheckedValue: string;
+  }
+
+  interface Checkbox extends CheckboxJSON {
+    value: string;
+
+    getResult: () => string;
+    setValue: (value: string) => void;
+    getJSON: () => CheckboxJSON;
+  }
+
   interface FormElementJSON {
     id: string;
     type: string;
     enabled: boolean;
     required: boolean;
     beemind: BeeminderConfig | null;
-    content: TextInputJSON | RadioGroupJSON;
+    content: TextInputJSON | RadioGroupJSON | CheckboxJSON;
   }
 
   interface FormElement extends FormElementJSON {
-    content: TextInput | RadioGroup;
+    content: TextInput | RadioGroup | Checkbox;
     invalid: boolean;
 
     setValue: (value: string) => void;
@@ -112,6 +126,7 @@ declare namespace beebetter {
     config: {
       name: string;
       pages: PageJSON[];
+      canSubmit: boolean;
     };
   }
 
@@ -120,6 +135,7 @@ declare namespace beebetter {
     slug: string;
     name: string;
     pages: Page[];
+    canSubmit: boolean;
 
     getPage: (index: number) => Page | null;
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;

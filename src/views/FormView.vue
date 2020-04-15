@@ -4,7 +4,11 @@
       <h4 class="float-left ml-2 mt-2">{{ form.name }} <b-icon-toggles /></h4>
     </b-row>
     <b-row v-if="Boolean(form.pages)">
-      <pages :pages="form.pages" v-on:elementUpdated="onElementUpdate" />
+      <pages
+        :pages="form.pages"
+        :canSubmit="form.canSubmit"
+        v-on:elementUpdated="onElementUpdate"
+      />
     </b-row>
   </b-container>
 </template>

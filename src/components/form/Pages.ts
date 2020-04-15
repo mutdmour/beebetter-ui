@@ -3,6 +3,7 @@ import Page from "./Page.vue";
 
 export default Vue.extend({
   name: "Pages",
+  props: ["canSubmit"],
   data() {
     return {
       currentPageIndex: 0

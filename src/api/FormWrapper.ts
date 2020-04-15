@@ -17,7 +17,9 @@ import {
   PageJSON,
   ElementType,
   ElementJSONType,
-  FormJSON
+  FormJSON,
+  CheckboxJSON,
+  Checkbox
 } from "../index";
 import { isAlphaNumericAndLowercase } from "../utils/helpers";
 import { notEmpty } from "../utils/helpers";
@@ -116,6 +118,44 @@ class RadioGroupWrapper implements RadioGroup {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+function isCheckbox(type: any, x: any): x is CheckboxJSON {
+  return type === "checkbox";
+}
+
+class CheckboxWrapper implements Checkbox {
+  label: string;
+  value: string;
+  unCheckedValue: string;
+  checkedValue: string;
+
+  constructor(content: CheckboxJSON) {
+    if (!content.label) {
+      throw new Error("Label is required for checkbox");
+    }
+    this.label = content.label;
+    this.unCheckedValue = content.unCheckedValue || "0";
+    this.checkedValue = content.checkedValue || "1";
+    this.value = this.unCheckedValue;
+  }
+
+  setValue(value: string) {
+    this.value = value;
+  }
+
+  getJSON(): CheckboxJSON {
+    return {
+      label: this.label,
+      unCheckedValue: this.unCheckedValue,
+      checkedValue: this.checkedValue
+    };
+  }
+
+  getResult(): string {
+    return this.value;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isTextInput(type: any, x: any): x is TextInputJSON {
   return type === "text";
 }
@@ -167,7 +207,7 @@ class TextInputWrapper implements TextInput {
 class FormElementWrapper implements FormElement {
   id: string;
   type: string;
-  content: TextInput | RadioGroup;
+  content: TextInput | RadioGroup | Checkbox;
   beemind: BeeminderConfig | null;
   enabled: boolean;
   required: boolean;
@@ -291,6 +331,8 @@ class FormElementWrapper implements FormElement {
       return new TextInputWrapper(content);
     } else if (isRadioGroup(type, content)) {
       return new RadioGroupWrapper(content);
+    } else if (isCheckbox(type, content)) {
+      return new CheckboxWrapper(content);
     }
     throw new Error(`Unknown element type: ${type}`);
   }
@@ -475,6 +517,7 @@ class PageWrapper implements Page {
 }
 
 export default class FormWrapper implements Form {
+  canSubmit: boolean;
   slug: string;
   name: string;
   pages: Page[];
@@ -490,6 +533,12 @@ export default class FormWrapper implements Form {
     this.name = data.config.name || this.slug;
     this.elementMap = new Map();
     this.pages = this.getPages(data.config.pages, this.elementMap);
+    this.canSubmit = Object.prototype.hasOwnProperty.call(
+      data.config,
+      "canSubmit"
+    )
+      ? data.config.canSubmit
+      : true;
   }
 
   getJSON(): FormJSON {
@@ -500,8 +549,9 @@ export default class FormWrapper implements Form {
     };
   }
 
-  getConfig(): { pages: PageJSON[]; name: string } {
+  getConfig(): { pages: PageJSON[]; name: string; canSubmit: boolean } {
     return {
+      canSubmit: this.canSubmit,
       pages: this.pages.map(page => page.getJSON()),
       name: this.name
     };

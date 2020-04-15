@@ -1,12 +1,14 @@
 import Vue from "vue";
 import TextInput from "./TextInput.vue";
 import RadioGroup from "./RadioGroup.vue";
+import Checkbox from "./Checkbox.vue";
 
 export default Vue.extend({
   name: "FormElement",
   components: {
     "text-input": TextInput,
-    "radio-group": RadioGroup
+    "radio-group": RadioGroup,
+    checkbox: Checkbox
   },
   props: ["element"],
   computed: {
