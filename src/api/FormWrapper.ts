@@ -517,6 +517,7 @@ class PageWrapper implements Page {
 }
 
 export default class FormWrapper implements Form {
+  type: string;
   canSubmit: boolean;
   slug: string;
   name: string;
@@ -532,13 +533,9 @@ export default class FormWrapper implements Form {
     this.slug = this.getSlug(data.slug);
     this.name = data.config.name || this.slug;
     this.elementMap = new Map();
+    this.type = data.config.type === "checklist" ? data.config.type : "form";
+    this.canSubmit = this.type === "checklist" ? false : true;
     this.pages = this.getPages(data.config.pages, this.elementMap);
-    this.canSubmit = Object.prototype.hasOwnProperty.call(
-      data.config,
-      "canSubmit"
-    )
-      ? data.config.canSubmit
-      : true;
   }
 
   getJSON(): FormJSON {
@@ -549,11 +546,11 @@ export default class FormWrapper implements Form {
     };
   }
 
-  getConfig(): { pages: PageJSON[]; name: string; canSubmit: boolean } {
+  getConfig(): { pages: PageJSON[]; name: string; type: string } {
     return {
-      canSubmit: this.canSubmit,
       pages: this.pages.map(page => page.getJSON()),
-      name: this.name
+      name: this.name,
+      type: this.type
     };
   }
 

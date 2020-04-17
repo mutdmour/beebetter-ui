@@ -126,7 +126,7 @@ declare namespace beebetter {
     config: {
       name: string;
       pages: PageJSON[];
-      canSubmit: boolean;
+      type: string;
     };
   }
 
@@ -136,6 +136,7 @@ declare namespace beebetter {
     name: string;
     pages: Page[];
     canSubmit: boolean;
+    type: string;
 
     getPage: (index: number) => Page | null;
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;
