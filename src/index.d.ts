@@ -137,6 +137,7 @@ declare namespace beebetter {
     pages: Page[];
     canSubmit: boolean;
     type: string;
+    date: string;
 
     getPage: (index: number) => Page | null;
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;
@@ -145,6 +146,7 @@ declare namespace beebetter {
     getConfig: () => { pages: PageJSON[]; name: string };
     setPageValidated: (pageIndex: number) => void;
     validatePage: (pageIndex: number) => void;
+    setDate: (value: string) => void;
   }
 
   interface FormsState {

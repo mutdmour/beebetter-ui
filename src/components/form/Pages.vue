@@ -1,6 +1,7 @@
 <template>
   <b-container fluid v-if="Boolean(currentPage)">
     <b-row class="ml-2">
+      <date-picker :value="date" v-on:input="onDateUpdated" />
       <page
         :name="currentPage.name"
         :elements="currentPage.elements"

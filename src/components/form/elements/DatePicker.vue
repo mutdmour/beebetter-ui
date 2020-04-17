@@ -1,12 +1,10 @@
 <template>
-  <div>
+  <b-row>
     <label for="datepicker">Choose a date</label>
     <b-form-datepicker
       id="datepicker"
       v-model="value"
       class="mb-2"
-      today-button
-      close-button
       size="md"
       :date-format-options="{
         year: 'numeric',
@@ -15,7 +13,7 @@
       }"
       @input="updateValue"
     ></b-form-datepicker>
-  </div>
+  </b-row>
 </template>
 
 <script lang="ts" src="./DatePicker.ts"></script>

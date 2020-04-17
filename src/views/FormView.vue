@@ -7,7 +7,9 @@
       <pages
         :pages="form.pages"
         :canSubmit="form.canSubmit"
+        :date="form.date"
         v-on:elementUpdated="onElementUpdate"
+        v-on:dateUpdated="onDateUpdated"
       />
     </b-row>
   </b-container>
@@ -43,6 +45,11 @@ export default Vue.extend({
       this.$store.commit("forms/updateElement", {
         pageIndex,
         elementIndex,
+        value
+      });
+    },
+    onDateUpdated(value: string) {
+      this.$store.commit("forms/updateDate", {
         value
       });
     }

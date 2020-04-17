@@ -1,16 +1,18 @@
 import Vue from "vue";
 import Page from "./Page.vue";
+import DatePicker from "./elements/DatePicker.vue";
 
 export default Vue.extend({
   name: "Pages",
-  props: ["canSubmit"],
+  props: ["canSubmit", "date"],
   data() {
     return {
       currentPageIndex: 0
     };
   },
   components: {
-    page: Page
+    page: Page,
+    "date-picker": DatePicker
   },
   computed: {
     currentPage() {
@@ -23,6 +25,9 @@ export default Vue.extend({
         this.$attrs.pages &&
         this.$attrs.pages.length - 1 === this.$data.currentPageIndex
       );
+    },
+    isFirst() {
+      return this.$data.currentPageIndex === 0;
     },
     hasPrevious() {
       return this.$data.currentPageIndex !== 0;
@@ -49,6 +54,9 @@ export default Vue.extend({
     },
     onElementUpdated(index: number, value: string): void {
       this.$emit("elementUpdated", this.$data.currentPageIndex, index, value);
+    },
+    onDateUpdated(value: string) {
+      this.$emit("dateUpdated", value);
     },
     onSubmit(): void {
       this.$store

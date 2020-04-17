@@ -101,7 +101,8 @@ const actions = {
           context.commit("setPageValidated", currentForm.pages.length - 1);
           const results = currentForm.getResults();
           if (results.length > 0) {
-            submitForm(currentForm.id, { results });
+            const date = currentForm.date.replace(/-/g, "");
+            submitForm(currentForm.id, { results, date });
             resolve();
           } else {
             throw new Error("Nothing to submit");
@@ -194,6 +195,12 @@ const mutations = {
     const form = getters.currentForm(state);
     if (form) {
       form.setValue(payload.pageIndex, payload.elementIndex, payload.value);
+    }
+  },
+  updateDate(state: FormsState, value: string) {
+    const form = getters.currentForm(state);
+    if (form) {
+      form.setDate(value);
     }
   }
 };

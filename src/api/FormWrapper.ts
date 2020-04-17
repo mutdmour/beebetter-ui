@@ -524,6 +524,7 @@ export default class FormWrapper implements Form {
   pages: Page[];
   id: number;
   elementMap: Map<string, FormElement>;
+  date: string;
 
   constructor(data: FormJSON) {
     if (!data) {
@@ -536,6 +537,18 @@ export default class FormWrapper implements Form {
     this.type = data.config.type === "checklist" ? data.config.type : "form";
     this.canSubmit = this.type === "checklist" ? false : true;
     this.pages = this.getPages(data.config.pages, this.elementMap);
+    this.date = this.getDate(new Date());
+  }
+
+  setDate(value: string) {
+    this.date = value;
+  }
+
+  getDate(date: Date) {
+    const format = (n: number) => (n < 10 ? `0${n}` : n);
+    return `${date.getFullYear}-${format(date.getMonth())}-${format(
+      date.getDay()
+    )}`;
   }
 
   getJSON(): FormJSON {

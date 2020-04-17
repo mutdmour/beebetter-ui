@@ -29,11 +29,6 @@
       :required="element.required"
       v-on:input="updateValue"
     />
-    <date-picker
-      v-else-if="element.type === 'date'"
-      :value="element.content.value"
-      v-on:input="updateValue"
-    />
   </b-row>
 </template>
 

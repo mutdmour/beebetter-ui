@@ -65,7 +65,7 @@ export function submitForm(formId: number, results: any) {
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(results)
+      body: JSON.stringify({ results })
     }).then(async response => {
       const body = await response.text();
       response.ok ? resolve() : reject(body);
