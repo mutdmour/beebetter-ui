@@ -1,7 +1,11 @@
 <template>
   <b-container fluid v-if="Boolean(currentPage)">
     <b-row class="ml-2">
-      <date-picker :value="date" v-on:input="onDateUpdated" />
+      <b-container fluid="lg">
+        <b-row class="form-element px-4 mb-2">
+          <date-picker :value="date" v-on:input="onDateUpdated" />
+        </b-row>
+      </b-container>
       <page
         :name="currentPage.name"
         :elements="currentPage.elements"
