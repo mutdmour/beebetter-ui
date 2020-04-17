@@ -3,7 +3,7 @@
     <label for="datepicker">Choose a date</label>
     <b-form-datepicker
       id="datepicker"
-      v-model="value"
+      :value="value"
       class="mb-2"
       size="md"
       :date-format-options="{

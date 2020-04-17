@@ -101,7 +101,7 @@ const actions = {
           context.commit("setPageValidated", currentForm.pages.length - 1);
           const results = currentForm.getResults();
           if (results.length > 0) {
-            const date = currentForm.date.replace(/-/g, "");
+            const date = currentForm.date;
             submitForm(currentForm.id, { results, date });
             resolve();
           } else {
@@ -197,10 +197,10 @@ const mutations = {
       form.setValue(payload.pageIndex, payload.elementIndex, payload.value);
     }
   },
-  updateDate(state: FormsState, value: string) {
+  updateDate(state: FormsState, payload: { value: string }) {
     const form = getters.currentForm(state);
     if (form) {
-      form.setDate(value);
+      form.setDate(payload.value);
     }
   }
 };

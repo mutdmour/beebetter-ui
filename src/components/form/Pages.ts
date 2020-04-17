@@ -20,10 +20,10 @@ export default Vue.extend({
         this.$attrs.pages && this.$attrs.pages[this.$data.currentPageIndex]
       );
     },
-    isFinal() {
-      return (
+    isFinal(): boolean {
+      return Boolean(
         this.$attrs.pages &&
-        this.$attrs.pages.length - 1 === this.$data.currentPageIndex
+          this.$attrs.pages.length - 1 === this.$data.currentPageIndex
       );
     },
     isFirst() {
