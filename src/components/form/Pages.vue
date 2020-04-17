@@ -3,7 +3,11 @@
     <b-row class="ml-2">
       <b-container fluid="lg">
         <b-row class="form-element px-4 mb-2">
-          <date-picker :value="date" v-on:input="onDateUpdated" />
+          <date-picker
+            :value="date"
+            v-on:input="onDateUpdated"
+            v-if="isFirst"
+          />
         </b-row>
       </b-container>
       <page
