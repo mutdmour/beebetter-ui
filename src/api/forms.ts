@@ -1,6 +1,8 @@
 import { FormJSON } from "../index";
 
 const GET_ALL_FORMS_ENDPOINT = "/api/v1/forms";
+const GET_FORM_RESULTS_ENDPOINT = "/api/v1/forms/results?formId=";
+const GET_LAST_FORM_RESULTS_ENDPOINT = "/api/v1/forms/results/last?formId=";
 const UPDATE_FORM_ENDPOINT = "/api/v1/forms/update?formId=";
 const DELETE_FORM_ENDPOINT = "/api/v1/forms/delete?formId=";
 const CREATE_FORM_ENDPOINT = "/api/v1/forms/create?slug=";
@@ -69,6 +71,36 @@ export function submitForm(formId: number, results: any) {
     }).then(async response => {
       const body = await response.text();
       response.ok ? resolve() : reject(body);
+    });
+  });
+}
+
+export function getAllResults(
+  formId: number,
+  startTime: number | null,
+  endTime: number | null
+) {
+  return new Promise((resolve, reject) => {
+    let endpoint = `${GET_FORM_RESULTS_ENDPOINT}${formId}`;
+    if (startTime) {
+      endpoint = `${endpoint}&startTime=${startTime}`;
+    }
+    if (endTime) {
+      endpoint = `${endpoint}&startTime=${endTime}`;
+    }
+
+    fetch(endpoint).then(response => {
+      response.ok ? resolve(response.json()) : reject();
+    });
+  });
+}
+
+export function getLastResults(formId: number) {
+  return new Promise((resolve, reject) => {
+    const endpoint = `${GET_LAST_FORM_RESULTS_ENDPOINT}${formId}`;
+
+    fetch(endpoint).then(response => {
+      response.ok ? resolve(response.json()) : reject();
     });
   });
 }
