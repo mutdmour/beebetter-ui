@@ -34,7 +34,7 @@ export default Vue.extend({
     pages: Pages
   },
   created() {
-    this.$store.dispatch("forms/getAll");
+    this.$store.dispatch("forms/getForm", this.$route.params.name);
     this.$store.commit("forms/setCurrentFormSlug", this.$route.params.name);
   },
   watch: {

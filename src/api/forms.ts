@@ -1,12 +1,20 @@
 import { FormJSON } from "../index";
 
+const GET_FORM_ENDPOINT = "/api/v1/form?slug=";
 const GET_ALL_FORMS_ENDPOINT = "/api/v1/forms";
 const GET_FORM_RESULTS_ENDPOINT = "/api/v1/forms/results?formId=";
-const GET_LAST_FORM_RESULTS_ENDPOINT = "/api/v1/forms/results/last?formId=";
 const UPDATE_FORM_ENDPOINT = "/api/v1/forms/update?formId=";
 const DELETE_FORM_ENDPOINT = "/api/v1/forms/delete?formId=";
 const CREATE_FORM_ENDPOINT = "/api/v1/forms/create?slug=";
 const SUBMIT_FORM_ENDPOINT = "/api/v1/forms/submit?formId=";
+
+export function getForm(slug: string) {
+  return new Promise((resolve, reject) => {
+    fetch(`${GET_FORM_ENDPOINT}${slug}`).then(response => {
+      response.ok ? resolve(response.json()) : reject();
+    });
+  });
+}
 
 export function getForms() {
   return new Promise((resolve, reject) => {
@@ -20,13 +28,9 @@ export function createForm(slug: string) {
   return new Promise((resolve, reject) => {
     const url = `${CREATE_FORM_ENDPOINT}${slug}`;
     fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug })
-    }).then(async response => {
-      response.ok
-        ? resolve(await response.json())
-        : reject(await response.text());
+      method: "POST"
+    }).then(response => {
+      response.ok ? resolve(response.json()) : reject();
     });
   });
 }
@@ -88,16 +92,6 @@ export function getAllResults(
     if (endTime) {
       endpoint = `${endpoint}&startTime=${endTime}`;
     }
-
-    fetch(endpoint).then(response => {
-      response.ok ? resolve(response.json()) : reject();
-    });
-  });
-}
-
-export function getLastResults(formId: number) {
-  return new Promise((resolve, reject) => {
-    const endpoint = `${GET_LAST_FORM_RESULTS_ENDPOINT}${formId}`;
 
     fetch(endpoint).then(response => {
       response.ok ? resolve(response.json()) : reject();

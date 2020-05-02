@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, FormsState, FormJSON, ElementUpdateEvent } from "../../index";
 import {
+  Form,
+  FormsState,
+  FormJSON,
+  ElementUpdateEvent,
+  PrevResult,
+  FormElement,
+  ResultData
+} from "../../index";
+import {
+  getForm,
   getForms,
   updateForm,
   createForm,
@@ -20,8 +29,11 @@ const wrapForm = (form: FormJSON): Form => {
   return new FormWrapper(form);
 };
 
-const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
-  return (
+const wrapFormData = (data: {
+  forms: FormJSON[];
+  results: PrevResult[];
+}): Form[] => {
+  const forms =
     data &&
     data.forms &&
     data.forms
@@ -31,8 +43,19 @@ const wrapFormData = (data: { forms: [FormJSON] }): Form[] => {
           // eslint-disable-next-line no-empty
         } catch (e) {}
       })
-      .filter(notEmpty)
-  );
+      .filter(notEmpty);
+
+  forms.forEach(form => {
+    data &&
+      data.results &&
+      data.results.forEach(result => {
+        if (form.id === result.formId) {
+          form.addPreviousResult(result);
+        }
+      });
+  });
+
+  return forms;
 };
 
 const getters = {
@@ -47,6 +70,11 @@ const getters = {
 const actions = {
   getAll: (context: ActionContext<any, unknown>) => {
     getForms().then((data: any) => {
+      context.commit("setForms", wrapFormData(data));
+    });
+  },
+  getForm: (context: ActionContext<any, unknown>, slug: string) => {
+    getForm(slug).then((data: any) => {
       context.commit("setForms", wrapFormData(data));
     });
   },
@@ -104,11 +132,19 @@ const actions = {
             if (result) {
               const date = currentForm.date;
               const contextId = element.getContextId();
-              submitForm(currentForm.id, {
+              const data = {
                 results: [result],
                 date,
                 contextId
+              };
+              submitForm(currentForm.id, data);
+              context.commit("addLastResult", {
+                element,
+                contextId,
+                date,
+                results: data.results
               });
+
               return resolve();
             }
           }
@@ -185,6 +221,27 @@ const actions = {
 };
 
 const mutations = {
+  addLastResult: (
+    state: FormsState,
+    payload: {
+      element: FormElement;
+      contextId: string;
+      date: string;
+      results: ResultData[];
+    }
+  ) => {
+    payload.element.addPreviousResult({
+      createdAt: `${Date.now()}`,
+      id: 0,
+      userId: 0,
+      formId: 0,
+      contextId: payload.contextId,
+      data: {
+        date: payload.date,
+        results: payload.results
+      }
+    });
+  },
   setCurrentFormSlug: (state: FormsState, formName: string) => {
     state.currentFormSlug = formName;
   },

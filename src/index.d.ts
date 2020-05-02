@@ -27,6 +27,7 @@ declare namespace beebetter {
     setValue: (value: string) => void;
     getJSON: () => RadioGroupJSON;
     getContextId: () => string | null;
+    addPreviousResult: (prevResult: PrevResult) => void;
   }
 
   interface TextInputJSON {
@@ -42,6 +43,7 @@ declare namespace beebetter {
     getValue: () => string;
     setValue: (value: string) => void;
     getJSON: () => TextInputJSON;
+    addPreviousResult: (prevResult: PrevResult) => void;
   }
 
   interface BeeminderConfig {
@@ -60,10 +62,22 @@ declare namespace beebetter {
     goalName: string;
   }
 
-  interface Result {
-    id: string;
+  interface ResultData {
+    elementId: string;
     beemind: BeeminderResult | null;
     value: string;
+  }
+
+  interface PrevResult {
+    id: number;
+    data: {
+      results: ResultData[];
+      date: string;
+    };
+    userId: number;
+    formId: number;
+    createdAt: string;
+    contextId: string | null;
   }
 
   interface RandomCollection extends RandomCollectionJSON {
@@ -71,7 +85,7 @@ declare namespace beebetter {
     elements: FormElement[];
 
     setValue: (value: string) => void;
-    getResult: () => Result | null;
+    getResult: () => ResultData | null;
     getJSON: () => RandomCollectionJSON;
     setValidated: () => void;
   }
@@ -89,6 +103,7 @@ declare namespace beebetter {
     setValue: (value: string) => void;
     getJSON: () => CheckboxJSON;
     getContextId: () => string | null;
+    addPreviousResult: (prevResult: PrevResult) => void;
   }
 
   interface TimerJSON {
@@ -102,6 +117,7 @@ declare namespace beebetter {
     setValue: (value: string) => void;
     getJSON: () => TimerJSON;
     getContextId: () => string | null;
+    addPreviousResult: (prevResult: PrevResult) => void;
   }
 
   interface FormElementJSON {
@@ -118,10 +134,11 @@ declare namespace beebetter {
     invalid: boolean;
 
     setValue: (value: string) => void;
-    getResult: () => Result | null;
+    getResult: () => ResultData | null;
     getJSON: () => FormElementJSON;
     setValidated: () => void;
     getContextId: () => string | null;
+    addPreviousResult: (prevResult: PrevResult) => void;
   }
 
   type ElementJSONType = FormElementJSON | RandomCollectionJSON;
@@ -137,7 +154,7 @@ declare namespace beebetter {
 
     getElement: (index: number) => FormElement | RandomCollection | null;
     setValue: (elementIndex: number, value: string) => void;
-    getResults: () => Result[];
+    getResults: () => ResultData[];
     getJSON: () => PageJSON;
     setValidated: () => void;
   }
@@ -164,13 +181,14 @@ declare namespace beebetter {
 
     getPage: (index: number) => Page | null;
     setValue: (pageIndex: number, elementIndex: number, value: string) => void;
-    getResults: () => Result[];
+    getResults: () => ResultData[];
     getJSON: () => FormJSON;
     getConfig: () => { pages: PageJSON[]; name: string };
     setPageValidated: (pageIndex: number) => void;
     validatePage: (pageIndex: number) => void;
     setDate: (value: string) => void;
     getElement: (elementId: string) => FormElement | null;
+    addPreviousResult: (result: PrevResult) => void;
   }
 
   interface FormsState {

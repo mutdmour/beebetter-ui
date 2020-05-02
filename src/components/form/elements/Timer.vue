@@ -5,7 +5,10 @@
         <label>{{ label }}</label>
       </b-col>
       <b-col>
-        {{ timePassed }}
+        {{ value }}
+      </b-col>
+      <b-col>
+        {{ formattedTime }}
       </b-col>
       <b-col>
         <b-button-group>

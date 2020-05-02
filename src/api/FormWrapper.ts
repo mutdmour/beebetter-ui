@@ -10,7 +10,7 @@ import {
   BeeminderConfig,
   RadioGroupOptionJSON,
   RadioGroupJSON,
-  Result,
+  ResultData,
   TextInputJSON,
   FormElementJSON,
   RandomCollectionJSON,
@@ -21,28 +21,47 @@ import {
   CheckboxJSON,
   Checkbox,
   Timer,
-  TimerJSON
+  TimerJSON,
+  PrevResult
 } from "../index";
 import { isAlphaNumericAndLowercase } from "../utils/helpers";
 import { notEmpty } from "../utils/helpers";
 
-// const getTotalTime = (list: [{ createdAt: number; value: string }]) => {
-//   return list.reduce(
-//     (time: number, curr: { createdAt: number; value: string }, i: number) => {
-//       if (i > 0) {
-//         const prev = list[i - 1];
-//         if (prev.value === "started") {
-//           return time + (curr.createdAt - prev.createdAt);
-//         }
-//       }
+const getTotalTime = (results: PrevResult[]) => {
+  const list = [...results];
+  list.push({
+    createdAt: `${Date.now() / 1000}`,
+    id: 0,
+    userId: 0,
+    formId: 0,
+    contextId: "",
+    data: {
+      date: "",
+      results: [
+        {
+          beemind: null,
+          value: "now",
+          elementId: ""
+        }
+      ]
+    }
+  });
 
-//       return time;
-//     },
-//     0
-//   );
-// };
+  return list.reduce((time: number, curr: PrevResult, i: number) => {
+    if (i > 0) {
+      const prev = list[i - 1];
+      if (prev.data.results[0].value === "started") {
+        console.log(curr.createdAt, prev.createdAt);
+        return time + (parseInt(curr.createdAt) - parseInt(prev.createdAt));
+      }
+    }
 
-const getRandomId = () => `timer-${Math.floor(Math.random() * 100000)}`;
+    return time;
+  }, 0);
+};
+
+const getRandomId = () =>
+  `timer-${Math.floor(Date.now() + Math.random() * 1000000000)}`;
 
 class TimerWrapper implements Timer {
   label: string;
@@ -50,12 +69,14 @@ class TimerWrapper implements Timer {
   time: number;
   interval: any;
   contextId: string;
+  previousResults: PrevResult[];
 
   constructor(data: TimerJSON) {
     this.label = data.label;
     this.value = "";
     this.time = 0;
     this.contextId = getRandomId();
+    this.previousResults = [];
   }
 
   getLabel(label: string): string {
@@ -76,6 +97,7 @@ class TimerWrapper implements Timer {
 
     if (this.value === "reset") {
       this.time = 0;
+      this.contextId = getRandomId();
     }
   }
 
@@ -85,6 +107,20 @@ class TimerWrapper implements Timer {
 
   getContextId() {
     return this.contextId;
+  }
+
+  addPreviousResult(prevResult: PrevResult) {
+    if (prevResult && prevResult.contextId) {
+      this.contextId = prevResult.contextId;
+      this.previousResults.push(prevResult);
+      const sorted = this.previousResults.sort(
+        (a: PrevResult, b: PrevResult) =>
+          parseInt(a.createdAt) - parseInt(b.createdAt)
+      );
+      this.time = getTotalTime(sorted);
+      this.value = sorted[sorted.length - 1].data.results[0].value;
+      this.previousResults = sorted;
+    }
   }
 }
 
@@ -188,6 +224,11 @@ class RadioGroupWrapper implements RadioGroup {
   getContextId() {
     return null;
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addPreviousResult(prevResult: PrevResult) {
+    //
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -229,6 +270,11 @@ class CheckboxWrapper implements Checkbox {
 
   getContextId() {
     return null;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addPreviousResult(prevResult: PrevResult) {
+    //
   }
 }
 
@@ -283,6 +329,11 @@ class TextInputWrapper implements TextInput {
   getContextId() {
     return null;
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addPreviousResult(prevResult: PrevResult) {
+    //
+  }
 }
 
 class FormElementWrapper implements FormElement {
@@ -334,7 +385,7 @@ class FormElementWrapper implements FormElement {
     return false;
   }
 
-  getResult(): Result | null {
+  getResult(): ResultData | null {
     if (!this.enabled) {
       return null;
     }
@@ -348,7 +399,7 @@ class FormElementWrapper implements FormElement {
           ? { goalName: this.beemind.goalName }
           : null;
       return {
-        id: this.id,
+        elementId: this.id,
         beemind,
         value
       };
@@ -442,6 +493,12 @@ class FormElementWrapper implements FormElement {
   setValue(value: string): void {
     this.content.setValue(value);
   }
+
+  addPreviousResult(prevResult: PrevResult) {
+    if (prevResult.data.results[0].elementId === this.id) {
+      this.content.addPreviousResult(prevResult);
+    }
+  }
 }
 
 function isRandomCollection(x: any): x is RandomCollectionJSON {
@@ -479,7 +536,7 @@ class RandomCollectionWrapper implements RandomCollection {
     };
   }
 
-  getResult(): Result | null {
+  getResult(): ResultData | null {
     return this.selected > -1 ? this.elements[this.selected].getResult() : null;
   }
 
@@ -549,7 +606,7 @@ class PageWrapper implements Page {
     };
   }
 
-  getResults(): Result[] {
+  getResults(): ResultData[] {
     return this.elements.map(el => el.getResult()).filter(notEmpty);
   }
 
@@ -664,7 +721,7 @@ export default class FormWrapper implements Form {
     };
   }
 
-  getResults(): Result[] {
+  getResults(): ResultData[] {
     return this.pages.flatMap(page => {
       return page.getResults();
     });
@@ -721,6 +778,16 @@ export default class FormWrapper implements Form {
     const page = this.getPage(pageIndex);
     if (page) {
       page.setValue(elementIndex, value);
+    }
+  }
+
+  addPreviousResult(prevResult: PrevResult) {
+    const iter = this.elementMap.keys();
+    let next = iter.next();
+    while (!next.done) {
+      const element = this.elementMap.get(next.value);
+      element?.addPreviousResult(prevResult);
+      next = iter.next();
     }
   }
 }
