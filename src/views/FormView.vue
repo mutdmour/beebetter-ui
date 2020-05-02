@@ -8,6 +8,7 @@
         :pages="form.pages"
         :canSubmit="form.canSubmit"
         :date="form.date"
+        :showDatePicker="form.showDatePicker"
         v-on:elementUpdated="onElementUpdate"
         v-on:dateUpdated="onDateUpdated"
       />
@@ -20,6 +21,7 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 import { Route } from "vue-router";
 import Pages from "../components/form/Pages.vue";
+import { ElementUpdateEvent } from "..";
 
 export default Vue.extend({
   name: "FormView",
@@ -41,11 +43,15 @@ export default Vue.extend({
     }
   },
   methods: {
-    onElementUpdate(pageIndex: number, elementIndex: number, value: string) {
+    onElementUpdate(
+      pageIndex: number,
+      elementIndex: number,
+      event: ElementUpdateEvent
+    ) {
       this.$store.commit("forms/updateElement", {
         pageIndex,
         elementIndex,
-        value
+        event
       });
     },
     onDateUpdated(value: string) {

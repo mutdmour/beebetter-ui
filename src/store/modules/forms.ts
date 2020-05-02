@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, FormsState, FormJSON } from "../../index";
+import { Form, FormsState, FormJSON, ElementUpdateEvent } from "../../index";
 import {
   getForms,
   updateForm,
@@ -91,6 +91,33 @@ const actions = {
         return reject(e);
       }
       resolve();
+    });
+  },
+  submitElement: (context: ActionContext<any, unknown>, elementId: string) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const currentForm = getters.currentForm(context.state);
+        if (currentForm) {
+          const element = currentForm.getElement(elementId);
+          if (element) {
+            const result = element.getResult();
+            if (result) {
+              const date = currentForm.date;
+              const contextId = element.getContextId();
+              submitForm(currentForm.id, {
+                results: [result],
+                date,
+                contextId
+              });
+              return resolve();
+            }
+          }
+        }
+
+        throw new Error("Nothing to submit");
+      } catch (e) {
+        reject(e);
+      }
     });
   },
   submit: (context: ActionContext<any, unknown>) => {
@@ -189,12 +216,16 @@ const mutations = {
     payload: {
       pageIndex: number;
       elementIndex: number;
-      value: string;
+      event: ElementUpdateEvent;
     }
   ) {
     const form = getters.currentForm(state);
     if (form) {
-      form.setValue(payload.pageIndex, payload.elementIndex, payload.value);
+      form.setValue(
+        payload.pageIndex,
+        payload.elementIndex,
+        payload.event.value
+      );
     }
   },
   updateDate(state: FormsState, payload: { value: string }) {

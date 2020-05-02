@@ -19,10 +19,79 @@ import {
   ElementJSONType,
   FormJSON,
   CheckboxJSON,
-  Checkbox
+  Checkbox,
+  Timer,
+  TimerJSON
 } from "../index";
 import { isAlphaNumericAndLowercase } from "../utils/helpers";
 import { notEmpty } from "../utils/helpers";
+
+// const getTotalTime = (list: [{ createdAt: number; value: string }]) => {
+//   return list.reduce(
+//     (time: number, curr: { createdAt: number; value: string }, i: number) => {
+//       if (i > 0) {
+//         const prev = list[i - 1];
+//         if (prev.value === "started") {
+//           return time + (curr.createdAt - prev.createdAt);
+//         }
+//       }
+
+//       return time;
+//     },
+//     0
+//   );
+// };
+
+const getRandomId = () => `timer-${Math.floor(Math.random() * 100000)}`;
+
+class TimerWrapper implements Timer {
+  label: string;
+  value: string;
+  time: number;
+  interval: any;
+  contextId: string;
+
+  constructor(data: TimerJSON) {
+    this.label = data.label;
+    this.value = "";
+    this.time = 0;
+    this.contextId = getRandomId();
+  }
+
+  getLabel(label: string): string {
+    if (!label) {
+      throw new Error("Label field in timer must have value");
+    }
+    return label;
+  }
+
+  getJSON() {
+    return {
+      label: this.label
+    };
+  }
+
+  setValue(value: string) {
+    this.value = value;
+
+    if (this.value === "reset") {
+      this.time = 0;
+    }
+  }
+
+  getValue() {
+    return this.value;
+  }
+
+  getContextId() {
+    return this.contextId;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function isTimer(type: any, x: any): x is TimerJSON {
+  return type === "timer";
+}
 
 class RadioGroupOptionWrapper implements RadioGroupOption {
   label: string;
@@ -30,7 +99,7 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
 
   constructor(data: RadioGroupOptionJSON) {
     this.label = this.getLabel(data.label);
-    this.value = this.getValue(data.value);
+    this.value = this.getOptionValue(data.value);
   }
 
   getLabel(label: string): string {
@@ -40,7 +109,7 @@ class RadioGroupOptionWrapper implements RadioGroupOption {
     return label;
   }
 
-  getValue(value: string): string {
+  getOptionValue(value: string): string {
     if (typeof value !== "string") {
       throw new Error("value field in radio group must be a string");
     }
@@ -109,11 +178,15 @@ class RadioGroupWrapper implements RadioGroup {
     this.value = value;
   }
 
-  getResult(): string {
+  getValue(): string {
     if (!this.value) {
       throw new Error("Value for radio group must be given");
     }
     return this.value;
+  }
+
+  getContextId() {
+    return null;
   }
 }
 
@@ -150,8 +223,12 @@ class CheckboxWrapper implements Checkbox {
     };
   }
 
-  getResult(): string {
+  getValue(): string {
     return this.value;
+  }
+
+  getContextId() {
+    return null;
   }
 }
 
@@ -181,7 +258,7 @@ class TextInputWrapper implements TextInput {
     };
   }
 
-  getResult(): string {
+  getValue(): string {
     const expected = this.repeat ? this.label : this.expected;
     if (
       expected &&
@@ -202,12 +279,16 @@ class TextInputWrapper implements TextInput {
   setValue(value: string): void {
     this.value = value;
   }
+
+  getContextId() {
+    return null;
+  }
 }
 
 class FormElementWrapper implements FormElement {
   id: string;
   type: string;
-  content: TextInput | RadioGroup | Checkbox;
+  content: TextInput | RadioGroup | Checkbox | Timer;
   beemind: BeeminderConfig | null;
   enabled: boolean;
   required: boolean;
@@ -221,6 +302,10 @@ class FormElementWrapper implements FormElement {
     this.enabled = this.getEnabled(data.enabled);
     this.required = this.getRequired(data.required);
     this.validated = false;
+  }
+
+  getContextId(): string | null {
+    return this.content.getContextId();
   }
 
   setValidated(): void {
@@ -254,18 +339,19 @@ class FormElementWrapper implements FormElement {
       return null;
     }
     try {
-      const value = this.content.getResult();
+      const value = this.content.getValue();
       if (this.required && !value) {
         throw new Error("Missing required field");
       }
-      if (this.beemind && this.beemind.enabled) {
-        return {
-          beemind: {
-            goalName: this.beemind.goalName
-          },
-          value
-        };
-      }
+      const beemind =
+        this.beemind && this.beemind.enabled
+          ? { goalName: this.beemind.goalName }
+          : null;
+      return {
+        id: this.id,
+        beemind,
+        value
+      };
     } catch (e) {
       if (this.required) {
         throw e;
@@ -333,6 +419,8 @@ class FormElementWrapper implements FormElement {
       return new RadioGroupWrapper(content);
     } else if (isCheckbox(type, content)) {
       return new CheckboxWrapper(content);
+    } else if (isTimer(type, content)) {
+      return new TimerWrapper(content);
     }
     throw new Error(`Unknown element type: ${type}`);
   }
@@ -525,6 +613,7 @@ export default class FormWrapper implements Form {
   id: number;
   elementMap: Map<string, FormElement>;
   date: string;
+  showDatePicker: boolean;
 
   constructor(data: FormJSON) {
     if (!data) {
@@ -534,10 +623,18 @@ export default class FormWrapper implements Form {
     this.slug = this.getSlug(data.slug);
     this.name = data.config.name || this.slug;
     this.elementMap = new Map();
-    this.type = data.config.type === "checklist" ? data.config.type : "form";
-    this.canSubmit = this.type === "checklist" ? false : true;
+    this.type =
+      data.config.type === "checklist" || data.config.type === "timer"
+        ? data.config.type
+        : "form";
+    this.canSubmit = this.type === "form";
+    this.showDatePicker = this.type !== "timer";
     this.pages = this.getPages(data.config.pages, this.elementMap);
     this.date = this.getDate(new Date());
+  }
+
+  getElement(elementId: string) {
+    return this.elementMap.get(elementId) || null;
   }
 
   setDate(value: string) {

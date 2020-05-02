@@ -20,7 +20,7 @@ export default Vue.extend({
   },
   methods: {
     updateValue(value: string): void {
-      this.$emit("input", value);
+      this.$emit("input", { value });
     }
   }
 });

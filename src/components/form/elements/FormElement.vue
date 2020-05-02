@@ -29,6 +29,15 @@
       :required="element.required"
       v-on:input="updateValue"
     />
+    <timer
+      v-else-if="element.type === 'timer'"
+      :label="element.content.label"
+      :id="element.id"
+      :value="element.content.value"
+      :required="element.required"
+      :time="element.content.time"
+      v-on:input="updateValue"
+    />
   </b-row>
 </template>
 

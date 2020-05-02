@@ -1,7 +1,7 @@
 <template>
   <b-container fluid v-if="Boolean(currentPage)">
     <b-row class="ml-2">
-      <b-container fluid="lg">
+      <b-container fluid="lg" v-if="showDatePicker">
         <b-row class="form-element px-4 mb-2">
           <date-picker
             :value="date"

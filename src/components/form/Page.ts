@@ -1,5 +1,6 @@
 import Vue from "vue";
 import FormElement from "./elements/FormElement.vue";
+import { ElementUpdateEvent } from "../../index";
 
 export default Vue.extend({
   name: "Page",
@@ -8,8 +9,8 @@ export default Vue.extend({
   },
   props: ["elements", "name", "pageIndex"],
   methods: {
-    onElementUpdate(index: number, value: string) {
-      this.$emit("elementUpdated", index, value);
+    onElementUpdate(index: number, event: ElementUpdateEvent) {
+      this.$emit("elementUpdated", index, event);
     }
   }
 });

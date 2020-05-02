@@ -1,10 +1,11 @@
 import Vue from "vue";
 import Page from "./Page.vue";
 import DatePicker from "./elements/DatePicker.vue";
+import { ElementUpdateEvent } from "../../index";
 
 export default Vue.extend({
   name: "Pages",
-  props: ["canSubmit", "date"],
+  props: ["canSubmit", "date", "showDatePicker", "pages"],
   data() {
     return {
       currentPageIndex: 0
@@ -17,13 +18,13 @@ export default Vue.extend({
   computed: {
     currentPage() {
       return (
-        this.$attrs.pages && this.$attrs.pages[this.$data.currentPageIndex]
+        this.$props.pages && this.$props.pages[this.$data.currentPageIndex]
       );
     },
     isFinal(): boolean {
       return Boolean(
-        this.$attrs.pages &&
-          this.$attrs.pages.length - 1 === this.$data.currentPageIndex
+        this.$props.pages &&
+          this.$props.pages.length - 1 === this.$data.currentPageIndex
       );
     },
     isFirst() {
@@ -52,8 +53,30 @@ export default Vue.extend({
     onPrevious(): void {
       this.$data.currentPageIndex--;
     },
-    onElementUpdated(index: number, value: string): void {
-      this.$emit("elementUpdated", this.$data.currentPageIndex, index, value);
+    onElementUpdated(index: number, event: ElementUpdateEvent): void {
+      this.$emit("elementUpdated", this.$data.currentPageIndex, index, event);
+      if (!this.$props.canSubmit) {
+        const page = this.$props.pages[this.$data.currentPageIndex];
+        const element = page.elements[index];
+        this.$store
+          .dispatch("forms/submitElement", element.id)
+          .then(() => {
+            this.$bvToast.toast(`${element.id} updated: ${event.value}`, {
+              variant: "success",
+              solid: false,
+              appendToast: true,
+              noCloseButton: true
+            });
+          })
+          .catch(e => {
+            this.$bvToast.toast(`${e}`, {
+              variant: "danger",
+              solid: false,
+              appendToast: true,
+              noCloseButton: true
+            });
+          });
+      }
     },
     onDateUpdated(value: string) {
       this.$emit("dateUpdated", value);

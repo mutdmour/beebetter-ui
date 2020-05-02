@@ -5,7 +5,7 @@ export default Vue.extend({
   props: ["value"],
   methods: {
     updateValue(value: string) {
-      this.$emit("input", value);
+      this.$emit("input", { value });
     }
   }
 });

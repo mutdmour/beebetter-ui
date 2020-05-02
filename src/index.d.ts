@@ -1,4 +1,8 @@
 declare namespace beebetter {
+  interface ElementUpdateEvent {
+    value: string;
+  }
+
   interface RadioGroupOptionJSON {
     label: string;
     value: string;
@@ -19,9 +23,10 @@ declare namespace beebetter {
     value: string;
     options: RadioGroupOption[];
 
-    getResult: () => string;
+    getValue: () => string;
     setValue: (value: string) => void;
     getJSON: () => RadioGroupJSON;
+    getContextId: () => string | null;
   }
 
   interface TextInputJSON {
@@ -33,7 +38,8 @@ declare namespace beebetter {
   interface TextInput extends TextInputJSON {
     value: string;
 
-    getResult: () => string;
+    getContextId: () => string | null;
+    getValue: () => string;
     setValue: (value: string) => void;
     getJSON: () => TextInputJSON;
   }
@@ -55,7 +61,8 @@ declare namespace beebetter {
   }
 
   interface Result {
-    beemind: BeeminderResult;
+    id: string;
+    beemind: BeeminderResult | null;
     value: string;
   }
 
@@ -78,9 +85,23 @@ declare namespace beebetter {
   interface Checkbox extends CheckboxJSON {
     value: string;
 
-    getResult: () => string;
+    getValue: () => string;
     setValue: (value: string) => void;
     getJSON: () => CheckboxJSON;
+    getContextId: () => string | null;
+  }
+
+  interface TimerJSON {
+    label: string;
+  }
+
+  interface Timer extends TimerJSON {
+    value: string;
+
+    getValue: () => string;
+    setValue: (value: string) => void;
+    getJSON: () => TimerJSON;
+    getContextId: () => string | null;
   }
 
   interface FormElementJSON {
@@ -89,17 +110,18 @@ declare namespace beebetter {
     enabled: boolean;
     required: boolean;
     beemind: BeeminderConfig | null;
-    content: TextInputJSON | RadioGroupJSON | CheckboxJSON;
+    content: TextInputJSON | RadioGroupJSON | CheckboxJSON | TimerJSON;
   }
 
   interface FormElement extends FormElementJSON {
-    content: TextInput | RadioGroup | Checkbox;
+    content: TextInput | RadioGroup | Checkbox | Timer;
     invalid: boolean;
 
     setValue: (value: string) => void;
     getResult: () => Result | null;
     getJSON: () => FormElementJSON;
     setValidated: () => void;
+    getContextId: () => string | null;
   }
 
   type ElementJSONType = FormElementJSON | RandomCollectionJSON;
@@ -136,6 +158,7 @@ declare namespace beebetter {
     name: string;
     pages: Page[];
     canSubmit: boolean;
+    showDatePicker: boolean;
     type: string;
     date: string;
 
@@ -147,6 +170,7 @@ declare namespace beebetter {
     setPageValidated: (pageIndex: number) => void;
     validatePage: (pageIndex: number) => void;
     setDate: (value: string) => void;
+    getElement: (elementId: string) => FormElement | null;
   }
 
   interface FormsState {

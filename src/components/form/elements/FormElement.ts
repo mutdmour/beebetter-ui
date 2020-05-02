@@ -2,13 +2,16 @@ import Vue from "vue";
 import TextInput from "./TextInput.vue";
 import RadioGroup from "./RadioGroup.vue";
 import Checkbox from "./Checkbox.vue";
+import Timer from "./Timer.vue";
+import { ElementUpdateEvent } from "../../../index";
 
 export default Vue.extend({
   name: "FormElement",
   components: {
     "text-input": TextInput,
     "radio-group": RadioGroup,
-    checkbox: Checkbox
+    checkbox: Checkbox,
+    timer: Timer
   },
   props: ["element"],
   computed: {
@@ -21,8 +24,8 @@ export default Vue.extend({
     }
   },
   methods: {
-    updateValue(value: string) {
-      this.$emit("updated", value);
+    updateValue(event: ElementUpdateEvent) {
+      this.$emit("updated", event);
     }
   }
 });

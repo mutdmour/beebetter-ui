@@ -36,8 +36,8 @@ export default Vue.extend({
     }
   },
   methods: {
-    updateValue(index: number): void {
-      this.$emit("input", index);
+    updateValue(value: string): void {
+      this.$emit("input", { value });
     },
     doneTyping() {
       this.$data.typing = false;
