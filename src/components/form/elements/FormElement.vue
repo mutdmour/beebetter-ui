@@ -33,9 +33,9 @@
       v-else-if="element.type === 'timer'"
       :label="element.content.label"
       :id="element.id"
+      :state="element.content.state"
       :value="element.content.value"
       :required="element.required"
-      :time="element.content.time"
       v-on:input="updateValue"
     />
   </b-row>

@@ -1,6 +1,7 @@
 declare namespace beebetter {
   interface ElementUpdateEvent {
     value: string;
+    state: string | null;
   }
 
   interface RadioGroupOptionJSON {
@@ -21,12 +22,12 @@ declare namespace beebetter {
 
   interface RadioGroup extends RadioGroupJSON {
     value: string;
+    state: string | null;
     options: RadioGroupOption[];
 
     getValue: () => string;
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getJSON: () => RadioGroupJSON;
-    getContextId: () => string | null;
     addPreviousResult: (prevResult: PrevResult) => void;
   }
 
@@ -38,10 +39,10 @@ declare namespace beebetter {
 
   interface TextInput extends TextInputJSON {
     value: string;
+    state: string | null;
 
-    getContextId: () => string | null;
     getValue: () => string;
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getJSON: () => TextInputJSON;
     addPreviousResult: (prevResult: PrevResult) => void;
   }
@@ -66,6 +67,7 @@ declare namespace beebetter {
     elementId: string;
     beemind: BeeminderResult | null;
     value: string;
+    state: string | null;
   }
 
   interface PrevResult {
@@ -84,7 +86,7 @@ declare namespace beebetter {
     selected: number;
     elements: FormElement[];
 
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getResult: () => ResultData | null;
     getJSON: () => RandomCollectionJSON;
     setValidated: () => void;
@@ -98,11 +100,11 @@ declare namespace beebetter {
 
   interface Checkbox extends CheckboxJSON {
     value: string;
+    state: string | null;
 
     getValue: () => string;
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getJSON: () => CheckboxJSON;
-    getContextId: () => string | null;
     addPreviousResult: (prevResult: PrevResult) => void;
   }
 
@@ -112,11 +114,11 @@ declare namespace beebetter {
 
   interface Timer extends TimerJSON {
     value: string;
+    state: string | null;
 
     getValue: () => string;
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getJSON: () => TimerJSON;
-    getContextId: () => string | null;
     addPreviousResult: (prevResult: PrevResult) => void;
   }
 
@@ -133,11 +135,10 @@ declare namespace beebetter {
     content: TextInput | RadioGroup | Checkbox | Timer;
     invalid: boolean;
 
-    setValue: (value: string) => void;
+    setValue: (value: string, state: string | null) => void;
     getResult: () => ResultData | null;
     getJSON: () => FormElementJSON;
     setValidated: () => void;
-    getContextId: () => string | null;
     addPreviousResult: (prevResult: PrevResult) => void;
   }
 
@@ -153,7 +154,11 @@ declare namespace beebetter {
     elements: ElementType[];
 
     getElement: (index: number) => FormElement | RandomCollection | null;
-    setValue: (elementIndex: number, value: string) => void;
+    setValue: (
+      elementIndex: number,
+      value: string,
+      state: string | null
+    ) => void;
     getResults: () => ResultData[];
     getJSON: () => PageJSON;
     setValidated: () => void;
@@ -180,7 +185,12 @@ declare namespace beebetter {
     date: string;
 
     getPage: (index: number) => Page | null;
-    setValue: (pageIndex: number, elementIndex: number, value: string) => void;
+    setValue: (
+      pageIndex: number,
+      elementIndex: number,
+      value: string,
+      state: string | null
+    ) => void;
     getResults: () => ResultData[];
     getJSON: () => FormJSON;
     getConfig: () => { pages: PageJSON[]; name: string };

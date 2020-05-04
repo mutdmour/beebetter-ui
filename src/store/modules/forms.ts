@@ -131,16 +131,14 @@ const actions = {
             const result = element.getResult();
             if (result) {
               const date = currentForm.date;
-              const contextId = element.getContextId();
               const data = {
                 results: [result],
-                date,
-                contextId
+                date
               };
+
               submitForm(currentForm.id, data);
               context.commit("addLastResult", {
                 element,
-                contextId,
                 date,
                 results: data.results
               });
@@ -281,7 +279,8 @@ const mutations = {
       form.setValue(
         payload.pageIndex,
         payload.elementIndex,
-        payload.event.value
+        payload.event.value,
+        payload.event.state
       );
     }
   },

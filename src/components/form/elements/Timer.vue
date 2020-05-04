@@ -5,7 +5,7 @@
         <label>{{ label }}</label>
       </b-col>
       <b-col>
-        {{ value }}
+        {{ state }}
       </b-col>
       <b-col>
         {{ formattedTime }}

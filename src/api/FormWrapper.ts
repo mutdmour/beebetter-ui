@@ -27,56 +27,18 @@ import {
 import { isAlphaNumericAndLowercase } from "../utils/helpers";
 import { notEmpty } from "../utils/helpers";
 
-const getTotalTime = (results: PrevResult[]) => {
-  const list = [...results];
-  list.push({
-    createdAt: `${Date.now() / 1000}`,
-    id: 0,
-    userId: 0,
-    formId: 0,
-    contextId: "",
-    data: {
-      date: "",
-      results: [
-        {
-          beemind: null,
-          value: "now",
-          elementId: ""
-        }
-      ]
-    }
-  });
-
-  return list.reduce((time: number, curr: PrevResult, i: number) => {
-    if (i > 0) {
-      const prev = list[i - 1];
-      if (prev.data.results[0].value === "started") {
-        console.log(curr.createdAt, prev.createdAt);
-        return time + (parseInt(curr.createdAt) - parseInt(prev.createdAt));
-      }
-    }
-
-    return time;
-  }, 0);
-};
-
-const getRandomId = () =>
-  `timer-${Math.floor(Date.now() + Math.random() * 1000000000)}`;
-
 class TimerWrapper implements Timer {
   label: string;
   value: string;
-  time: number;
   interval: any;
-  contextId: string;
-  previousResults: PrevResult[];
+  previousResult: PrevResult | null;
+  state: string | null;
 
   constructor(data: TimerJSON) {
     this.label = data.label;
-    this.value = "";
-    this.time = 0;
-    this.contextId = getRandomId();
-    this.previousResults = [];
+    this.value = "0";
+    this.state = "reset";
+    this.previousResult = null;
   }
 
   getLabel(label: string): string {
@@ -92,12 +54,13 @@ class TimerWrapper implements Timer {
     };
   }
 
-  setValue(value: string) {
+  setValue(value: string, state: string | null) {
     this.value = value;
+    this.state = state;
 
-    if (this.value === "reset") {
-      this.time = 0;
-      this.contextId = getRandomId();
+    if (this.state === "reset") {
+      this.previousResult = null;
+      this.value = "0";
     }
   }
 
@@ -105,22 +68,15 @@ class TimerWrapper implements Timer {
     return this.value;
   }
 
-  getContextId() {
-    return this.contextId;
-  }
-
   addPreviousResult(prevResult: PrevResult) {
-    if (prevResult && prevResult.contextId) {
-      this.contextId = prevResult.contextId;
-      this.previousResults.push(prevResult);
-      const sorted = this.previousResults.sort(
-        (a: PrevResult, b: PrevResult) =>
-          parseInt(a.createdAt) - parseInt(b.createdAt)
-      );
-      this.time = getTotalTime(sorted);
-      this.value = sorted[sorted.length - 1].data.results[0].value;
-      this.previousResults = sorted;
+    this.state = prevResult.data.results[0].state;
+    this.value = prevResult.data.results[0].value;
+    if (this.state === "started") {
+      this.value = `${parseInt(this.value) +
+        Date.now() / 1000 -
+        parseInt(prevResult.createdAt)}`;
     }
+    this.previousResult = prevResult;
   }
 }
 
@@ -173,12 +129,14 @@ class RadioGroupWrapper implements RadioGroup {
   options: RadioGroupOption[];
   value: string;
   type: "radio";
+  state: string | null;
 
   constructor(data: RadioGroupJSON) {
     this.label = this.getLabel(data.label);
     this.options = this.getOptions(data.options);
     this.value = "";
     this.type = "radio";
+    this.state = null;
   }
 
   getJSON(): RadioGroupJSON {
@@ -221,10 +179,6 @@ class RadioGroupWrapper implements RadioGroup {
     return this.value;
   }
 
-  getContextId() {
-    return null;
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addPreviousResult(prevResult: PrevResult) {
     //
@@ -241,6 +195,7 @@ class CheckboxWrapper implements Checkbox {
   value: string;
   unCheckedValue: string;
   checkedValue: string;
+  state: string | null;
 
   constructor(content: CheckboxJSON) {
     if (!content.label) {
@@ -250,6 +205,7 @@ class CheckboxWrapper implements Checkbox {
     this.unCheckedValue = content.unCheckedValue || "0";
     this.checkedValue = content.checkedValue || "1";
     this.value = this.unCheckedValue;
+    this.state = null;
   }
 
   setValue(value: string) {
@@ -268,10 +224,6 @@ class CheckboxWrapper implements Checkbox {
     return this.value;
   }
 
-  getContextId() {
-    return null;
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addPreviousResult(prevResult: PrevResult) {
     //
@@ -288,12 +240,14 @@ class TextInputWrapper implements TextInput {
   value: string;
   expected: string | null;
   repeat: boolean;
+  state: string | null;
 
   constructor(data: TextInputJSON) {
     this.label = this.getLabel(data.label);
     this.expected = data.expected || null;
     this.value = "";
     this.repeat = Boolean(data.repeat);
+    this.state = null;
   }
 
   getJSON(): TextInputJSON {
@@ -326,10 +280,6 @@ class TextInputWrapper implements TextInput {
     this.value = value;
   }
 
-  getContextId() {
-    return null;
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addPreviousResult(prevResult: PrevResult) {
     //
@@ -353,10 +303,6 @@ class FormElementWrapper implements FormElement {
     this.enabled = this.getEnabled(data.enabled);
     this.required = this.getRequired(data.required);
     this.validated = false;
-  }
-
-  getContextId(): string | null {
-    return this.content.getContextId();
   }
 
   setValidated(): void {
@@ -401,7 +347,8 @@ class FormElementWrapper implements FormElement {
       return {
         elementId: this.id,
         beemind,
-        value
+        value,
+        state: this.content.state
       };
     } catch (e) {
       if (this.required) {
@@ -490,8 +437,8 @@ class FormElementWrapper implements FormElement {
     return required;
   }
 
-  setValue(value: string): void {
-    this.content.setValue(value);
+  setValue(value: string, state: string | null): void {
+    this.content.setValue(value, state);
   }
 
   addPreviousResult(prevResult: PrevResult) {
@@ -578,10 +525,10 @@ class RandomCollectionWrapper implements RandomCollection {
       : null;
   }
 
-  setValue(value: string) {
+  setValue(value: string, state: string | null) {
     const element = this.selected > -1 ? this.getElement(this.selected) : null;
     if (element) {
-      element.setValue(value);
+      element.setValue(value, state);
     }
   }
 }
@@ -653,10 +600,10 @@ class PageWrapper implements Page {
       : null;
   }
 
-  setValue(elementIndex: number, value: string) {
+  setValue(elementIndex: number, value: string, state: string | null) {
     const element = this.getElement(elementIndex);
     if (element) {
-      element.setValue(value);
+      element.setValue(value, state);
     }
   }
 }
@@ -688,6 +635,10 @@ export default class FormWrapper implements Form {
     this.showDatePicker = this.type !== "timer";
     this.pages = this.getPages(data.config.pages, this.elementMap);
     this.date = this.getDate(new Date());
+
+    if (this.type === "timer" && this.elementMap.size > 1) {
+      throw new Error("timer forms can only have one timer");
+    }
   }
 
   getElement(elementId: string) {
@@ -774,10 +725,15 @@ export default class FormWrapper implements Form {
     return this.pages && this.pages.length > index ? this.pages[index] : null;
   }
 
-  setValue(pageIndex: number, elementIndex: number, value: string) {
+  setValue(
+    pageIndex: number,
+    elementIndex: number,
+    value: string,
+    state: string | null
+  ) {
     const page = this.getPage(pageIndex);
     if (page) {
-      page.setValue(elementIndex, value);
+      page.setValue(elementIndex, value, state);
     }
   }
 

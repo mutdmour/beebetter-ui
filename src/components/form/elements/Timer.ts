@@ -13,17 +13,17 @@ const formatTime = (seconds: number) => {
 
 export default Vue.extend({
   name: "Timer",
-  props: ["label", "value", "id", "time"],
+  props: ["label", "value", "id", "state"],
   data: function() {
     let interval = null;
-    if (this.value === "started") {
+    if (this.state === "started") {
       interval = setInterval(() => {
         this.$data.timePassed++;
         this.$data.formattedTime = formatTime(this.$data.timePassed);
       }, 1000);
     }
 
-    const timePassed = this.$props.time;
+    const timePassed = parseInt(this.$props.value);
     return {
       timePassed,
       formattedTime: formatTime(timePassed),
@@ -32,38 +32,49 @@ export default Vue.extend({
   },
   computed: {
     canReset: function() {
-      return this.value === "cancelled" || this.value === "stopped";
+      return this.state === "cancelled" || this.state === "stopped";
     },
     canStart: function() {
-      return !this.value || this.value === "paused" || this.value === "reset";
+      return !this.state || this.state === "paused" || this.state === "reset";
     }
   },
   methods: {
     onReset() {
       this.$emit("input", {
-        value: "reset"
+        value: `0`,
+        state: "reset"
       });
       this.$data.timePassed = 0;
       this.$data.formattedTime = formatTime(this.$data.timePassed);
     },
     onStarted() {
-      this.$emit("input", { value: "started" });
+      this.$emit("input", {
+        value: `${this.$data.timePassed}`,
+        state: "started"
+      });
       this.$data.interval = setInterval(() => {
         this.$data.timePassed++;
         this.$data.formattedTime = formatTime(this.$data.timePassed);
       }, 1000);
     },
     onPaused() {
-      this.$emit("input", { value: "paused" });
+      this.$emit("input", {
+        value: `${this.$data.timePassed}`,
+        state: "paused"
+      });
       clearInterval(this.$data.interval);
     },
     onStopped() {
-      this.$emit("input", { value: "stopped" });
+      this.$emit("input", {
+        value: `${this.$data.timePassed}`,
+        state: "stopped"
+      });
       clearInterval(this.$data.interval);
     },
     onCancelled() {
       this.$emit("input", {
-        value: "cancelled"
+        value: `${this.$data.timePassed}`,
+        state: "cancelled"
       });
       clearInterval(this.$data.interval);
     }
