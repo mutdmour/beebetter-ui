@@ -56,6 +56,10 @@ class TimerWrapper implements Timer {
     };
   }
 
+  canTrack() {
+    return this.state === "stopped";
+  }
+
   setValue(value: string, state: string | null) {
     this.time = parseInt(value);
     this.value = `${parseInt(value) / 60}`;
@@ -143,6 +147,10 @@ class RadioGroupWrapper implements RadioGroup {
     this.state = null;
   }
 
+  canTrack() {
+    return true;
+  }
+
   getJSON(): RadioGroupJSON {
     return {
       label: this.label,
@@ -212,6 +220,10 @@ class CheckboxWrapper implements Checkbox {
     this.state = null;
   }
 
+  canTrack() {
+    return true;
+  }
+
   setValue(value: string) {
     this.value = value;
   }
@@ -252,6 +264,10 @@ class TextInputWrapper implements TextInput {
     this.value = "";
     this.repeat = Boolean(data.repeat);
     this.state = null;
+  }
+
+  canTrack() {
+    return true;
   }
 
   getJSON(): TextInputJSON {
@@ -345,7 +361,7 @@ class FormElementWrapper implements FormElement {
         throw new Error("Missing required field");
       }
       const beemind =
-        this.beemind && this.beemind.enabled
+        this.beemind && this.beemind.enabled && this.content.canTrack()
           ? { goalName: this.beemind.goalName }
           : null;
       return {
