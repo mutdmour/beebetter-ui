@@ -33,9 +33,11 @@ class TimerWrapper implements Timer {
   interval: any;
   previousResult: PrevResult | null;
   state: string | null;
+  time: number;
 
   constructor(data: TimerJSON) {
     this.label = data.label;
+    this.time = 0;
     this.value = "0";
     this.state = "reset";
     this.previousResult = null;
@@ -55,12 +57,14 @@ class TimerWrapper implements Timer {
   }
 
   setValue(value: string, state: string | null) {
-    this.value = value;
+    this.time = parseInt(value);
+    this.value = `${parseInt(value) / 60}`;
     this.state = state;
 
     if (this.state === "reset") {
       this.previousResult = null;
       this.value = "0";
+      this.time = 0;
     }
   }
 
@@ -71,10 +75,10 @@ class TimerWrapper implements Timer {
   addPreviousResult(prevResult: PrevResult) {
     this.state = prevResult.data.results[0].state;
     this.value = prevResult.data.results[0].value;
+    this.time = Math.floor(parseFloat(this.value) * 60);
     if (this.state === "started") {
-      this.value = `${parseInt(this.value) +
-        Date.now() / 1000 -
-        parseInt(prevResult.createdAt)}`;
+      this.time =
+        this.time + Date.now() / 1000 - parseInt(prevResult.createdAt);
     }
     this.previousResult = prevResult;
   }

@@ -34,7 +34,7 @@
       :label="element.content.label"
       :id="element.id"
       :state="element.content.state"
-      :value="element.content.value"
+      :value="element.content.time"
       :required="element.required"
       v-on:input="updateValue"
     />

@@ -61,7 +61,7 @@ export default Vue.extend({
         this.$store
           .dispatch("forms/submitElement", element.id)
           .then(() => {
-            this.$bvToast.toast(`${element.id} updated: ${event.value}`, {
+            this.$bvToast.toast(`${element.id} updated: ${event.state}`, {
               variant: "success",
               solid: false,
               appendToast: true,
