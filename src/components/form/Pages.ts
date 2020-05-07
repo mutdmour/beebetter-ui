@@ -85,13 +85,18 @@ export default Vue.extend({
       this.$store
         .dispatch("forms/submit")
         .then(() => {
-          this.$bvToast.toast("Form submitted successfully", {
-            variant: "success",
-            solid: false,
-            appendToast: true,
-            noCloseButton: true
-          });
-          this.$router.push("/forms");
+          this.$bvModal
+            .msgBoxOk("Form was submitted successfully", {
+              size: "sm",
+              buttonSize: "sm",
+              okVariant: "success",
+              headerClass: "p-2 border-bottom-0",
+              footerClass: "p-2 border-top-0",
+              centered: true
+            })
+            .then(() => {
+              this.$router.push("/forms");
+            });
         })
         .catch(e => {
           this.$bvToast.toast(`${e}`, {
