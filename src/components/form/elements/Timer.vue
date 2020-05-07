@@ -5,15 +5,19 @@
         <label>{{ label }}</label>
       </b-col>
       <b-col>
-        {{ state }}
-      </b-col>
-      <b-col>
-        {{ formattedTime }}
+        <label>{{ formattedTime }}</label>
       </b-col>
       <b-col>
         <b-button-group>
           <b-button v-if="canReset" variant="outline-primary" @click="onReset">
             Reset
+          </b-button>
+          <b-button
+            v-else-if="isPaused"
+            variant="outline-success"
+            @click="onStarted"
+          >
+            Start Again
           </b-button>
           <b-button v-else-if="canStart" variant="success" @click="onStarted">
             Start

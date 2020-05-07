@@ -36,6 +36,9 @@ export default Vue.extend({
     },
     canStart: function() {
       return !this.state || this.state === "paused" || this.state === "reset";
+    },
+    isPaused: function() {
+      return this.state === "paused";
     }
   },
   methods: {
