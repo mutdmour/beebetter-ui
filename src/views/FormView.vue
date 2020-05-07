@@ -1,7 +1,12 @@
 <template>
   <b-container class="form" v-if="Boolean(form)">
     <b-row v-if="Boolean(form.name)">
-      <h4 class="float-left ml-2 mt-2">{{ form.name }} <b-icon-toggles /></h4>
+      <h4 class="float-left ml-2 mt-2">
+        {{ form.name }}
+        <b-icon-toggles v-if="form.type === 'form'" />
+        <b-icon-alarm v-else-if="form.type === 'timer'" />
+        <b-icon-check v-else-if="form.type === 'checklist'" />
+      </h4>
     </b-row>
     <b-row v-if="Boolean(form.pages)">
       <pages

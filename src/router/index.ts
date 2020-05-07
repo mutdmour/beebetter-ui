@@ -11,6 +11,11 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/",
+    name: "Root",
+    component: FormsList
+  },
+  {
     path: "/forms",
     name: "Forms",
     component: FormsList
