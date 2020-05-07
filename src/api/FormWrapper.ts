@@ -236,7 +236,11 @@ class CheckboxWrapper implements Checkbox {
     };
   }
 
-  getValue(): string {
+  getValue(required: boolean): string {
+    if (required && this.value !== this.checkedValue) {
+      return "";
+    }
+
     return this.value;
   }
 
@@ -356,7 +360,7 @@ class FormElementWrapper implements FormElement {
       return null;
     }
     try {
-      const value = this.content.getValue();
+      const value = this.content.getValue(this.required);
       if (this.required && !value) {
         throw new Error("Missing required field");
       }

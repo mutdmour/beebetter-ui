@@ -7,7 +7,7 @@
         align-v="center"
         class="mt-2"
       >
-        <b-col cols="3">
+        <b-col cols="4">
           <span>
             {{ form.name }}
           </span>
@@ -34,7 +34,7 @@
       </b-form-row>
 
       <b-form-row v-if="createMode" class="mt-2" align-v="center">
-        <b-col cols="3">
+        <b-col cols="4">
           <b-form-group id="create-group-1">
             <b-form-input
               id="slug-input"
@@ -50,7 +50,7 @@
         <b-col class="d-none d-lg-block d-md-block"></b-col>
       </b-form-row>
       <b-form-row v-else class="mt-2" align-v="center">
-        <b-col cols="3"></b-col>
+        <b-col cols="4"></b-col>
         <b-col>
           <b-form-group id="create-new-group-1">
             <b-button variant="outline-primary" @click="onCreate"

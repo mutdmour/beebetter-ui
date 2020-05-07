@@ -104,7 +104,7 @@ declare namespace beebetter {
     value: string;
     state: string | null;
 
-    getValue: () => string;
+    getValue: (required: boolean) => string;
     setValue: (value: string, state: string | null) => void;
     getJSON: () => CheckboxJSON;
     addPreviousResult: (prevResult: PrevResult) => void;
