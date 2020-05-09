@@ -30,5 +30,7 @@ jobs:
       uses: fnkr/github-action-ghr@v1
       if: startsWith(github.ref, 'refs/tags/')
       env:
+        GHR_COMPRESS: xz
         GHR_PATH: dist/
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
