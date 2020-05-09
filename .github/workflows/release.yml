@@ -41,9 +41,9 @@ jobs:
 #         GHR_COMPRESS: xz
 #         GHR_PATH: dist/
 #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
     - name: Create release
       uses: Roang-zero1/github-create-release-action@master
-      #if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
