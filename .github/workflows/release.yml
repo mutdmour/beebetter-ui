@@ -26,31 +26,9 @@ jobs:
     - name: build static files
       run: yarn && yarn install && yarn build
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        # Artifact name
-        name: build # optional
-        # A file, directory or wildcard pattern that describes what to upload
-        path: dist/
-
-#     - name: Release
-#       uses: fnkr/github-action-ghr@v1
-#       if: startsWith(github.ref, 'refs/tags/')
-#       env:
-#         GHR_COMPRESS: xz
-#         GHR_PATH: dist/
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Create release
-      uses: Roang-zero1/github-create-release-action@master
+    - name: Release
+      uses: fnkr/github-action-ghr@v1
       if: startsWith(github.ref, 'refs/tags/')
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Add artifacts to release
-      uses: Roang-zero1/github-upload-release-artifacts-action@master
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        args: dist/
-      env:
+        GHR_PATH: dist/
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
