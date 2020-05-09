@@ -34,10 +34,16 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: dist/
 
-    - name: Release
-      uses: fnkr/github-action-ghr@v1
-      if: startsWith(github.ref, 'refs/tags/')
+#     - name: Release
+#       uses: fnkr/github-action-ghr@v1
+#       if: startsWith(github.ref, 'refs/tags/')
+#       env:
+#         GHR_COMPRESS: xz
+#         GHR_PATH: dist/
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create release
+      uses: Roang-zero1/github-create-release-action@master
+      #if: startsWith(github.ref, 'refs/tags/')
       env:
-        GHR_COMPRESS: xz
-        GHR_PATH: dist/
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
