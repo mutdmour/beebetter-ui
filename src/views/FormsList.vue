@@ -8,9 +8,7 @@
         class="mt-2"
       >
         <b-col cols="5">
-          <span>
-            {{ form.name }}
-          </span>
+          <span> {{ form.name }}: </span>
         </b-col>
         <b-col>
           <b-dropdown
