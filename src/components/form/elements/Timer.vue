@@ -17,7 +17,7 @@
             variant="outline-success"
             @click="onStarted"
           >
-            Start Again
+            Continue
           </b-button>
           <b-button v-else-if="canStart" variant="success" @click="onStarted">
             Start
