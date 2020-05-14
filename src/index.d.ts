@@ -23,6 +23,7 @@ declare namespace beebetter {
   interface RadioGroup extends RadioGroupJSON {
     value: string;
     state: string | null;
+    timestamp: number | null;
     options: RadioGroupOption[];
 
     getValue: () => string;
@@ -41,6 +42,7 @@ declare namespace beebetter {
   interface TextInput extends TextInputJSON {
     value: string;
     state: string | null;
+    timestamp: number | null;
 
     getValue: () => string;
     setValue: (value: string, state: string | null) => void;
@@ -70,6 +72,7 @@ declare namespace beebetter {
     beemind: BeeminderResult | null;
     value: string;
     state: string | null;
+    timestamp: number;
   }
 
   interface PrevResult {
@@ -103,6 +106,7 @@ declare namespace beebetter {
   interface Checkbox extends CheckboxJSON {
     value: string;
     state: string | null;
+    timestamp: number | null;
 
     getValue: (required: boolean) => string;
     setValue: (value: string, state: string | null) => void;
@@ -118,6 +122,7 @@ declare namespace beebetter {
   interface Timer extends TimerJSON {
     value: string;
     state: string | null;
+    timestamp: number | null;
 
     getValue: () => string;
     setValue: (value: string, state: string | null) => void;

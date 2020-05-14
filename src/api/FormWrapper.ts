@@ -33,11 +33,13 @@ class TimerWrapper implements Timer {
   interval: any;
   previousResult: PrevResult | null;
   state: string | null;
-  time: number;
+  timestamp: number;
+  timeSoFar: number;
 
   constructor(data: TimerJSON) {
     this.label = data.label;
-    this.time = 0;
+    this.timeSoFar = 0;
+    this.timestamp = Date.now();
     this.value = "0";
     this.state = "reset";
     this.previousResult = null;
@@ -61,14 +63,15 @@ class TimerWrapper implements Timer {
   }
 
   setValue(value: string, state: string | null) {
-    this.time = parseInt(value);
+    this.timeSoFar = parseInt(value);
     this.value = `${parseInt(value) / 60}`;
     this.state = state;
+    this.timestamp = Date.now();
 
     if (this.state === "reset") {
       this.previousResult = null;
       this.value = "0";
-      this.time = 0;
+      this.timeSoFar = 0;
     }
   }
 
@@ -79,11 +82,10 @@ class TimerWrapper implements Timer {
   addPreviousResult(prevResult: PrevResult) {
     this.state = prevResult.data.results[0].state;
     this.value = prevResult.data.results[0].value;
-    this.time = Math.floor(parseFloat(this.value) * 60);
-    if (this.state === "started") {
-      this.time =
-        this.time + Date.now() / 1000 - parseInt(prevResult.createdAt);
-    }
+    this.timestamp =
+      prevResult.data.results[0].timestamp ||
+      parseInt(prevResult.createdAt) * 1000;
+    this.timeSoFar = Math.floor(parseFloat(this.value) * 60);
     this.previousResult = prevResult;
   }
 }
@@ -138,6 +140,7 @@ class RadioGroupWrapper implements RadioGroup {
   value: string;
   type: "radio";
   state: string | null;
+  timestamp: number | null;
 
   constructor(data: RadioGroupJSON) {
     this.label = this.getLabel(data.label);
@@ -145,6 +148,7 @@ class RadioGroupWrapper implements RadioGroup {
     this.value = "";
     this.type = "radio";
     this.state = null;
+    this.timestamp = null;
   }
 
   canTrack() {
@@ -208,6 +212,7 @@ class CheckboxWrapper implements Checkbox {
   unCheckedValue: string;
   checkedValue: string;
   state: string | null;
+  timestamp: number | null;
 
   constructor(content: CheckboxJSON) {
     if (!content.label) {
@@ -218,6 +223,7 @@ class CheckboxWrapper implements Checkbox {
     this.checkedValue = content.checkedValue || "1";
     this.value = this.unCheckedValue;
     this.state = null;
+    this.timestamp = null;
   }
 
   canTrack() {
@@ -261,8 +267,10 @@ class TextInputWrapper implements TextInput {
   expected: string | null;
   repeat: boolean;
   state: string | null;
+  timestamp: number | null;
 
   constructor(data: TextInputJSON) {
+    this.timestamp = null;
     this.label = this.getLabel(data.label);
     this.expected = data.expected || null;
     this.value = "";
@@ -368,11 +376,13 @@ class FormElementWrapper implements FormElement {
         this.beemind && this.beemind.enabled && this.content.canTrack()
           ? { goalName: this.beemind.goalName }
           : null;
+
       return {
         elementId: this.id,
         beemind,
         value,
-        state: this.content.state
+        state: this.content.state,
+        timestamp: this.content.timestamp || Date.now()
       };
     } catch (e) {
       if (this.required) {

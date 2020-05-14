@@ -13,24 +13,30 @@ const formatTime = (seconds: number) => {
 
 export default Vue.extend({
   name: "Timer",
-  props: ["label", "value", "id", "state"],
+  props: ["label", "value", "id", "state", "timestamp"],
   data: function() {
     let interval = null;
+    let timePassed = parseInt(this.$props.value);
+
     if (this.state === "started") {
+      timePassed += Math.floor((Date.now() - this.$props.timestamp) / 1000);
+
       interval = setInterval(() => {
-        this.$data.timePassed++;
-        this.$data.formattedTime = formatTime(this.$data.timePassed);
+        this.$data.timePassed =
+          parseInt(this.$props.value) +
+          Math.floor((Date.now() - this.$props.timestamp) / 1000);
       }, 1000);
     }
 
-    const timePassed = parseInt(this.$props.value);
     return {
       timePassed,
-      formattedTime: formatTime(timePassed),
       interval
     };
   },
   computed: {
+    formattedTime: function() {
+      return formatTime(this.$data.timePassed);
+    },
     canReset: function() {
       return this.state === "cancelled" || this.state === "stopped";
     },
