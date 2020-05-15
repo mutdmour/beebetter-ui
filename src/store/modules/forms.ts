@@ -19,6 +19,7 @@ import {
 import { ActionContext } from "vuex";
 import FormWrapper from "@/api/FormWrapper";
 import { notEmpty } from "../../utils/helpers";
+import { isValidSlugName } from "../../utils/helpers";
 
 const state = {
   currentFormSlug: null,
@@ -41,7 +42,9 @@ const wrapFormData = (data: {
         try {
           return wrapForm(form);
           // eslint-disable-next-line no-empty
-        } catch (e) {}
+        } catch (e) {
+          console.log(`not showing ${form.slug}`, e);
+        }
       })
       .filter(notEmpty);
 
@@ -183,8 +186,10 @@ const actions = {
           return reject("slug must be defined");
         }
         slug = slug.trim();
-        if (slug.indexOf(" ") >= 0) {
-          return reject("slug must not contian spaces");
+        if (!isValidSlugName(slug)) {
+          throw new Error(
+            "Invalid slug name: must be alphanumeric and can contain dash"
+          );
         }
         createForm(slug)
           .then((form: any) => {
@@ -192,10 +197,10 @@ const actions = {
             resolve();
           })
           .catch((e: string) => {
-            reject(e);
+            throw new Error(e);
           });
       } catch (e) {
-        reject("Error occured in creating new form");
+        reject(`Error occured in creating new form: ${e}`);
       }
     });
   },

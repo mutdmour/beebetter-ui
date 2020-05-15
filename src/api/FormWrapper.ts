@@ -24,7 +24,7 @@ import {
   TimerJSON,
   PrevResult
 } from "../index";
-import { isAlphaNumericAndLowercase } from "../utils/helpers";
+import { isValidSlugName } from "../utils/helpers";
 import { notEmpty } from "../utils/helpers";
 
 class TimerWrapper implements Timer {
@@ -738,7 +738,7 @@ export default class FormWrapper implements Form {
     if (typeof slug !== "string") {
       throw new Error("Slug must be of type string");
     }
-    if (!isAlphaNumericAndLowercase(slug)) {
+    if (!isValidSlugName(slug)) {
       throw new Error("Slug must be alphanumeric and lowercase");
     }
 
