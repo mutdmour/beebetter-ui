@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 <template>
   <div class="forms">
     <b-container fluid="md">
@@ -128,6 +127,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { mapState } from "vuex";
 import { Form } from "..";
