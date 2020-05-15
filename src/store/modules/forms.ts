@@ -45,6 +45,8 @@ const wrapFormData = (data: {
       })
       .filter(notEmpty);
 
+  forms.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
+
   forms.forEach(form => {
     data &&
       data.results &&

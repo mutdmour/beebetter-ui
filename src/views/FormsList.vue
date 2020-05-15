@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 <template>
   <div class="forms">
     <b-container fluid="md">
+      <!-- <b-icon-alarm v-else-if="form.type === 'timer'" />
+        <b-icon-check v-else-if="form.type === 'checklist'" /> -->
       <b-form-row
         v-for="form in forms"
         v-bind:key="form.id"
@@ -8,7 +11,70 @@
         class="mt-2"
       >
         <b-col cols="5">
-          <span> {{ form.name }}: </span>
+          <span>
+            <b-icon-toggles />
+            {{ form.name }}:
+          </span>
+        </b-col>
+        <b-col>
+          <b-dropdown
+            right
+            split
+            text="View"
+            variant="success"
+            size="md"
+            :splitHref="'/#/forms/' + form.slug"
+          >
+            <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
+              Edit</b-dropdown-item
+            >
+            <b-dropdown-item disabled>Results</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+            <b-dropdown-item variant="danger" @click="onDelete(form.id)"
+              >Delete</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-col>
+      </b-form-row>
+
+      <b-form-row
+        v-for="form in timers"
+        v-bind:key="form.id"
+        align-v="center"
+        class="mt-2"
+      >
+        <b-col cols="5">
+          <span> <b-icon-alarm /> {{ form.name }}: </span>
+        </b-col>
+        <b-col>
+          <b-dropdown
+            right
+            split
+            text="View"
+            variant="success"
+            size="md"
+            :splitHref="'/#/forms/' + form.slug"
+          >
+            <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
+              Edit</b-dropdown-item
+            >
+            <b-dropdown-item disabled>Results</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+            <b-dropdown-item variant="danger" @click="onDelete(form.id)"
+              >Delete</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-col>
+      </b-form-row>
+
+      <b-form-row
+        v-for="form in checklists"
+        v-bind:key="form.id"
+        align-v="center"
+        class="mt-2"
+      >
+        <b-col cols="5">
+          <span> <b-icon-check /> {{ form.name }}: </span>
         </b-col>
         <b-col>
           <b-dropdown
@@ -64,6 +130,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
+import { Form } from "..";
 
 export default Vue.extend({
   name: "FormsList",
@@ -76,8 +143,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      forms: (state: any) => state.forms.forms
+      forms: (state: any) =>
+        state.forms.forms.filter((form: Form) => form.type === "form"),
+      timers: (state: any) =>
+        state.forms.forms.filter((form: Form) => form.type === "timer"),
+      checklists: (state: any) =>
+        state.forms.forms.filter((form: Form) => form.type === "checklist")
     })
   },
   methods: {
