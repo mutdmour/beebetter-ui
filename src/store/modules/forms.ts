@@ -41,8 +41,8 @@ const wrapFormData = (data: {
       .map(form => {
         try {
           return wrapForm(form);
-          // eslint-disable-next-line no-empty
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.log(`not showing ${form.slug}`, e);
         }
       })
