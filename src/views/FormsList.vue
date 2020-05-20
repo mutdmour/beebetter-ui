@@ -122,6 +122,43 @@
           </b-form-group>
         </b-col>
       </b-form-row>
+
+      <b-link @click="showHiddenForms" v-if="!showHidden && hasHidden"
+        >Show forms submitted today</b-link
+      >
+      <b-form-row
+        v-for="form in hidden"
+        v-bind:key="form.id"
+        align-v="center"
+        class="mt-2"
+        v-else-if="hasHidden"
+      >
+        <b-col cols="5">
+          <span>
+            <b-icon-toggles />
+            {{ form.name }}:
+          </span>
+        </b-col>
+        <b-col>
+          <b-dropdown
+            right
+            split
+            text="View"
+            variant="success"
+            size="md"
+            :splitHref="'/#/forms/' + form.slug"
+          >
+            <b-dropdown-item :href="'/#/forms/' + form.slug + '/edit'">
+              Edit</b-dropdown-item
+            >
+            <b-dropdown-item disabled>Results</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+            <b-dropdown-item variant="danger" @click="onDelete(form.id)"
+              >Delete</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-col>
+      </b-form-row>
     </b-container>
   </div>
 </template>
@@ -136,7 +173,8 @@ export default Vue.extend({
   name: "FormsList",
   data: () => ({
     createMode: false,
-    slug: ""
+    slug: "",
+    showHidden: false
   }),
   created() {
     this.$store.dispatch("forms/getAll");
@@ -144,14 +182,26 @@ export default Vue.extend({
   computed: {
     ...mapState({
       forms: (state: any) =>
-        state.forms.forms.filter((form: Form) => form.type === "form"),
+        state.forms.forms.filter(
+          (form: Form) => form.type === "form" && !form.submittedToday
+        ),
       timers: (state: any) =>
         state.forms.forms.filter((form: Form) => form.type === "timer"),
       checklists: (state: any) =>
-        state.forms.forms.filter((form: Form) => form.type === "checklist")
+        state.forms.forms.filter((form: Form) => form.type === "checklist"),
+      hidden: (state: any) =>
+        state.forms.forms.filter(
+          (form: Form) => form.type === "form" && form.submittedToday
+        ),
+      hasHidden: function() {
+        return this.hidden?.length > 0;
+      }
     })
   },
   methods: {
+    showHiddenForms: function() {
+      this.$data.showHidden = true;
+    },
     onCreate: function() {
       this.$data.createMode = true;
     },

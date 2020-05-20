@@ -192,6 +192,7 @@ declare namespace beebetter {
     showDatePicker: boolean;
     type: string;
     date: string;
+    submittedToday: boolean;
 
     getPage: (index: number) => Page | null;
     setValue: (

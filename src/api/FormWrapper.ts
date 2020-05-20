@@ -652,6 +652,7 @@ export default class FormWrapper implements Form {
   elementMap: Map<string, FormElement>;
   date: string;
   showDatePicker: boolean;
+  submittedToday: boolean;
 
   constructor(data: FormJSON) {
     if (!data) {
@@ -673,6 +674,7 @@ export default class FormWrapper implements Form {
     if (this.type === "timer" && this.elementMap.size > 1) {
       throw new Error("timer forms can only have one timer");
     }
+    this.submittedToday = false;
   }
 
   getElement(elementId: string) {
@@ -772,6 +774,10 @@ export default class FormWrapper implements Form {
   }
 
   addPreviousResult(prevResult: PrevResult) {
+    if (prevResult?.data?.date === this.date) {
+      this.submittedToday = true;
+    }
+
     const iter = this.elementMap.keys();
     let next = iter.next();
     while (!next.done) {
