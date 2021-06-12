@@ -7,6 +7,7 @@
       <b-collapse id="nav-collapse" is-nav right>
         <b-navbar-nav v-if="isLoggedIn">
           <b-nav-item href="/#/forms" class="text-center">Forms</b-nav-item>
+          <b-nav-item href="/#/reader" class="text-center">Reader</b-nav-item>
 
           <b-nav-item
             v-if="isLoggedIn"
@@ -18,7 +19,7 @@
         </b-navbar-nav>
         <b-navbar-nav v-else>
           <b-nav-item href="/#/login" class="text-center">Log in</b-nav-item>
-          <b-nav-item href="/#/signup" class="text-center">Sign up</b-nav-item>
+          <!-- <b-nav-item href="/#/signup" class="text-center">Sign up</b-nav-item> -->
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
