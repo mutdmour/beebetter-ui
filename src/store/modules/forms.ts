@@ -159,6 +159,16 @@ const actions = {
       }
     });
   },
+  submitData: (context: ActionContext<any, unknown>, data: any) => {
+    return new Promise((resolve, reject) => {
+      try {
+        submitForm(0, { results: data });
+        resolve(true);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  },
   submit: (context: ActionContext<any, unknown>) => {
     return new Promise((resolve, reject) => {
       try {

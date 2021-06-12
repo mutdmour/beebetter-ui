@@ -5,6 +5,7 @@ import FormEdit from "../views/FormEdit.vue";
 import FormView from "../views/FormView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
+import ReaderView from "../views/ReaderView.vue";
 import { isUserIdCookieSet } from "../utils/helpers";
 
 Vue.use(VueRouter);
@@ -39,6 +40,11 @@ const routes = [
     path: "/signup",
     name: "Signup",
     component: SignupView
+  },
+  {
+    path: "/reader",
+    name: "Reader",
+    component: ReaderView
   }
 ];
 
